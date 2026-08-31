@@ -2,7 +2,6 @@
 
 Unreal Engine の開発でよく使う英単語を、意味と紐づけながらタイピングで覚えるためのブラウザ用学習ツールです。
 
-**▶ [ここで遊べます](https://ユーザー名.github.io/typing-terms/)**
 
 ---
 
@@ -93,9 +92,7 @@ Unreal Engine の開発でよく使う英単語を、意味と紐づけながら
 
 ---
 
-## ライセンス
 
-MIT License. 詳細は [LICENSE](LICENSE) を参照してください。
 
 ---
 
