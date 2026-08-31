@@ -41,7 +41,6 @@
     <div class="dict-filters">
       <div class="chip-group" id="hub-eng"></div>
       <div class="chip-group" id="hub-cat"></div>
-      <div class="chip-group" id="hub-lvl"></div>
     </div>
     <label class="hub-dict-toggle">
       <input type="checkbox" id="hub-pairs">
@@ -110,12 +109,8 @@
     els.cat.innerHTML = cats.map(c=>
       `<label class="chip"><input type="checkbox" class="hub-cat-check" value="${escapeHtml(c)}" checked>${escapeHtml(c)}</label>`
     ).join("");
-    const lvls = [...new Set(ALL.map(w=>w.level))].sort((a,b)=>a-b);
-    els.lvl.innerHTML = lvls.map(l=>
-      `<label class="chip"><input type="checkbox" class="hub-lvl-check" value="${l}" checked>Lv${l}</label>`
-    ).join("");
 
-    [els.eng, els.cat, els.lvl].forEach(c=> c.addEventListener("change", render));
+    [els.eng, els.cat].forEach(c=> c.addEventListener("change", render));
     els.search.addEventListener("input", render);
     els.pairs.addEventListener("change", render);
   }
@@ -124,10 +119,9 @@
     return [...container.querySelectorAll("input." + cls + ":checked")].map(i=>i.value);
   }
 
-  function passes(w, engSet, catSet, lvlSet, q){
+  function passes(w, engSet, catSet, q){
     if(!engSet.has(w._engineId)) return false;
     if(!catSet.has(w.category)) return false;
-    if(!lvlSet.has(w.level)) return false;
     if(q && !(hay.get(wkey(w)) || "").includes(q)) return false;
     return true;
   }
@@ -168,14 +162,13 @@
   function render(){
     const engSet = new Set(checked(els.eng, "hub-eng-check"));
     const catSet = new Set(checked(els.cat, "hub-cat-check"));
-    const lvlSet = new Set(checked(els.lvl, "hub-lvl-check").map(Number));
     const q = els.search.value.trim().toLowerCase();
     const qLabel = els.search.value.trim();
     const pairsMode = els.pairs.checked;
 
     if(pairsMode){
       const groups = conceptGroups()
-        .filter(g => g.words.some(w=> passes(w, engSet, catSet, lvlSet, q)))
+        .filter(g => g.words.some(w=> passes(w, engSet, catSet, q)))
         .sort((a,b)=> a.words[0].en.toLowerCase().localeCompare(b.words[0].en.toLowerCase()));
       els.count.textContent = `${groups.length} 組` + (q ? ` (「${qLabel}」で検索)` : "");
       if(groups.length === 0){ showEmpty(); return; }
@@ -199,7 +192,7 @@
     }
 
     const rows = ALL
-      .filter(w=> passes(w, engSet, catSet, lvlSet, q))
+      .filter(w=> passes(w, engSet, catSet, q))
       .sort((a,b)=> a.en.toLowerCase().localeCompare(b.en.toLowerCase()));
     els.count.textContent = `${rows.length} 件` + (q ? ` (「${qLabel}」で検索)` : "");
     if(rows.length === 0){ showEmpty(); return; }
@@ -241,7 +234,6 @@
       search: document.getElementById("hub-search"),
       eng: document.getElementById("hub-eng"),
       cat: document.getElementById("hub-cat"),
-      lvl: document.getElementById("hub-lvl"),
       pairs: document.getElementById("hub-pairs"),
       count: document.getElementById("hub-count"),
       list: document.getElementById("hub-list"),
