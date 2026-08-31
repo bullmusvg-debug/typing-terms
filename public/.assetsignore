@@ -1,0 +1,6 @@
+# Cloudflare Workers の静的アセット配信から除外するファイル (.gitignore 記法)
+.assetsignore
+*.bak
+_test*.html
+ue/_test.html
+unity/_test.html

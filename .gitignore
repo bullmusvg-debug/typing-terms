@@ -1,0 +1,19 @@
+# 依存関係
+node_modules/
+
+# Wrangler / Cloudflare のローカル生成物
+.wrangler/
+dist/
+.mf/
+
+# ローカル環境変数（シークレット）
+.dev.vars
+.dev.vars.*
+
+# バックアップ / 一時ファイル
+*.bak
+*~
+
+# OS / エディタ
+.DS_Store
+Thumbs.db

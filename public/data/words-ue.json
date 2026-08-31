@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": 2,
+    "version": 3,
     "engine": "Unreal Engine",
     "note": "UE寄りのゲーム開発英単語データ。categoryは「共通」(エンジン問わず使う一般的なゲーム/プログラミング用語)と「UE固有」(Unreal Engine特有の名称)。levelは1=頻出基礎, 2=中級, 3=応用。",
     "fields": {
@@ -11,7 +11,9 @@
       "category": "共通 | UE固有",
       "level": "1 | 2 | 3",
       "where": "UEのどこで遭遇するか（エディタ上の場所や使う場面）",
-      "phrase": "実際の英語表記例（ノード名・設定項目名・C++の書き方）"
+      "phrase": "実際の英語表記例（ノード名・設定項目名・C++の書き方）",
+      "concept": "エンジン横断の概念キー。同じ値を持つ語どうしが対応する（例: UEのLevel ⇔ UnityのScene）。対応物が無い語には付かない",
+      "match": "conceptで結ばれた語どうしの関係。同義 | 近い"
     }
   },
   "words": [
@@ -23,7 +25,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "アウトライナーに並ぶ要素はすべてこれ。Place Actorsパネルからレベルに配置する",
-      "phrase": "Get All Actors of Class — 指定クラスのアクターを全取得するノード"
+      "phrase": "Get All Actors of Class — 指定クラスのアクターを全取得するノード",
+      "concept": "placed-object",
+      "match": "近い"
     },
     {
       "id": 2,
@@ -73,7 +77,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "コンテンツブラウザで右クリック→Blueprint Class から作成する",
-      "phrase": "Blueprint Class / Parent Class — 作成ダイアログの表記"
+      "phrase": "Blueprint Class / Parent Class — 作成ダイアログの表記",
+      "concept": "blueprint-asset",
+      "match": "近い"
     },
     {
       "id": 7,
@@ -83,7 +89,9 @@
       "category": "共通",
       "level": 1,
       "where": "BPエディタ左上のComponentsパネル、Addボタンから追加する",
-      "phrase": "Add Component — 実行中に追加するノード名"
+      "phrase": "Add Component — 実行中に追加するノード名",
+      "concept": "component",
+      "match": "同義"
     },
     {
       "id": 8,
@@ -93,7 +101,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "File→New Level、またはコンテンツブラウザのLevelアセット",
-      "phrase": "Open Level (by Name) — レベルを読み込むノード"
+      "phrase": "Open Level (by Name) — レベルを読み込むノード",
+      "concept": "scene",
+      "match": "同義"
     },
     {
       "id": 9,
@@ -113,7 +123,9 @@
       "category": "共通",
       "level": 1,
       "where": "弾やエフェクトを実行中に出すとき、Spawn Actor from Classを使う",
-      "phrase": "Spawn Actor from Class — 実行時にアクターを生成"
+      "phrase": "Spawn Actor from Class — 実行時にアクターを生成",
+      "concept": "spawn",
+      "match": "同義"
     },
     {
       "id": 11,
@@ -123,7 +135,9 @@
       "category": "共通",
       "level": 1,
       "where": "弾が着弾した後や、敵の死亡処理の末尾に置く",
-      "phrase": "Destroy Actor — アクターを破棄するノード"
+      "phrase": "Destroy Actor — アクターを破棄するノード",
+      "concept": "destroy",
+      "match": "同義"
     },
     {
       "id": 12,
@@ -133,7 +147,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "イベントグラフに最初から置かれているEvent Tickノード",
-      "phrase": "Event Tick — 毎フレーム実行されるイベント"
+      "phrase": "Event Tick — 毎フレーム実行されるイベント",
+      "concept": "per-frame-update",
+      "match": "同義"
     },
     {
       "id": 13,
@@ -143,7 +159,9 @@
       "category": "共通",
       "level": 1,
       "where": "Event TickのDelta Secondsピン。移動量に掛けて使う",
-      "phrase": "Delta Seconds — Event Tickの出力ピン名"
+      "phrase": "Delta Seconds — Event Tickの出力ピン名",
+      "concept": "delta-time",
+      "match": "同義"
     },
     {
       "id": 14,
@@ -153,7 +171,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "初期化処理を書く定番の場所",
-      "phrase": "Event BeginPlay — 開始時に一度だけ実行"
+      "phrase": "Event BeginPlay — 開始時に一度だけ実行",
+      "concept": "begin-play",
+      "match": "同義"
     },
     {
       "id": 15,
@@ -163,7 +183,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "End Play Reasonで、破棄かレベル遷移かを判別できる",
-      "phrase": "Event EndPlay / End Play Reason"
+      "phrase": "Event EndPlay / End Play Reason",
+      "concept": "end-play",
+      "match": "近い"
     },
     {
       "id": 16,
@@ -193,7 +215,9 @@
       "category": "共通",
       "level": 1,
       "where": "Get Player Characterの結果を自作キャラBPとして扱うときに挟む",
-      "phrase": "Cast To BP_MyCharacter — 失敗時はCast Failedへ抜ける"
+      "phrase": "Cast To BP_MyCharacter — 失敗時はCast Failedへ抜ける",
+      "concept": "cast",
+      "match": "同義"
     },
     {
       "id": 19,
@@ -203,7 +227,9 @@
       "category": "共通",
       "level": 2,
       "where": "コンテンツブラウザ右クリック→Blueprints→Blueprint Interface",
-      "phrase": "Blueprint Interface / Implemented Interfaces"
+      "phrase": "Blueprint Interface / Implemented Interfaces",
+      "concept": "interface",
+      "match": "同義"
     },
     {
       "id": 20,
@@ -213,7 +239,9 @@
       "category": "共通",
       "level": 2,
       "where": "C++でイベント通知を作るとき、ヘッダでDECLARE_...DELEGATEと書く",
-      "phrase": "Bind / Unbind / Broadcast — 登録・解除・発火"
+      "phrase": "Bind / Unbind / Broadcast — 登録・解除・発火",
+      "concept": "delegate",
+      "match": "同義"
     },
     {
       "id": 21,
@@ -223,7 +251,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "BPエディタ左のMy Blueprintパネル、Event Dispatchers欄で追加",
-      "phrase": "Call / Bind Event to — 呼び出しと登録"
+      "phrase": "Call / Bind Event to — 呼び出しと登録",
+      "concept": "event-dispatcher",
+      "match": "近い"
     },
     {
       "id": 22,
@@ -243,7 +273,9 @@
       "category": "共通",
       "level": 1,
       "where": "BP作成時のParent Class選択が、そのまま継承関係になる",
-      "phrase": "Parent Class / Class Settings — 親を確認・変更する場所"
+      "phrase": "Parent Class / Class Settings — 親を確認・変更する場所",
+      "concept": "inheritance",
+      "match": "同義"
     },
     {
       "id": 24,
@@ -253,7 +285,9 @@
       "category": "共通",
       "level": 1,
       "where": "My BlueprintパネルのFunctions欄、Overrideボタンから選ぶ",
-      "phrase": "Override Function — 親の関数を上書きする"
+      "phrase": "Override Function — 親の関数を上書きする",
+      "concept": "override",
+      "match": "同義"
     },
     {
       "id": 25,
@@ -273,7 +307,9 @@
       "category": "共通",
       "level": 1,
       "where": "変数の型を選ぶとき、Object Referenceとして指定する",
-      "phrase": "Object Reference / Self Reference — 変数型の表記"
+      "phrase": "Object Reference / Self Reference — 変数型の表記",
+      "concept": "reference",
+      "match": "同義"
     },
     {
       "id": 27,
@@ -293,7 +329,9 @@
       "category": "UE固有",
       "level": 3,
       "where": "大量のアセットを抱えるDataTableで、起動を軽くするために使う",
-      "phrase": "Soft Object Reference / Async Load Asset"
+      "phrase": "Soft Object Reference / Async Load Asset",
+      "concept": "soft-reference",
+      "match": "近い"
     },
     {
       "id": 29,
@@ -303,7 +341,9 @@
       "category": "共通",
       "level": 3,
       "where": "Output Logに流れるGC関連のログで目にする",
-      "phrase": "garbage collected — ログ上の表記"
+      "phrase": "garbage collected — ログ上の表記",
+      "concept": "garbage-collection",
+      "match": "同義"
     },
     {
       "id": 30,
@@ -313,7 +353,9 @@
       "category": "共通",
       "level": 1,
       "where": "Detailsパネル最上部に必ず並ぶ設定欄",
-      "phrase": "Set Actor Transform / Relative Transform"
+      "phrase": "Set Actor Transform / Relative Transform",
+      "concept": "transform",
+      "match": "同義"
     },
     {
       "id": 31,
@@ -323,7 +365,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "Detailsパネルの一番上、X/Y/Zの入力欄",
-      "phrase": "Set Actor Location / Get Actor Location"
+      "phrase": "Set Actor Location / Get Actor Location",
+      "concept": "location",
+      "match": "同義"
     },
     {
       "id": 32,
@@ -333,7 +377,9 @@
       "category": "共通",
       "level": 1,
       "where": "Detailsパネル、Locationのすぐ下",
-      "phrase": "Set Actor Rotation / Add Actor Local Rotation"
+      "phrase": "Set Actor Rotation / Add Actor Local Rotation",
+      "concept": "rotation",
+      "match": "同義"
     },
     {
       "id": 33,
@@ -343,7 +389,9 @@
       "category": "共通",
       "level": 1,
       "where": "Detailsパネル、Rotationのすぐ下",
-      "phrase": "Set Actor Scale 3D"
+      "phrase": "Set Actor Scale 3D",
+      "concept": "scale",
+      "match": "同義"
     },
     {
       "id": 34,
@@ -353,7 +401,9 @@
       "category": "共通",
       "level": 1,
       "where": "変数の型選択でVector。移動方向や座標計算に常用する",
-      "phrase": "Vector Length / Normalize / Dot Product"
+      "phrase": "Vector Length / Normalize / Dot Product",
+      "concept": "vector",
+      "match": "同義"
     },
     {
       "id": 35,
@@ -363,7 +413,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "変数の型選択でRotator。Vectorと見た目が似ているので混同注意",
-      "phrase": "Make Rotator / Rotator from Vector"
+      "phrase": "Make Rotator / Rotator from Vector",
+      "concept": "rotator",
+      "match": "近い"
     },
     {
       "id": 36,
@@ -373,7 +425,9 @@
       "category": "共通",
       "level": 3,
       "where": "BPではほぼ出てこない。C++やアニメーション内部で扱う",
-      "phrase": "FQuat — C++での型名"
+      "phrase": "FQuat — C++での型名",
+      "concept": "quaternion",
+      "match": "同義"
     },
     {
       "id": 37,
@@ -413,7 +467,9 @@
       "category": "共通",
       "level": 2,
       "where": "モデルを置いたとき回転の中心がズレていたら、まずここを疑う",
-      "phrase": "Pivot Offset — 基準点をずらす設定"
+      "phrase": "Pivot Offset — 基準点をずらす設定",
+      "concept": "pivot",
+      "match": "同義"
     },
     {
       "id": 41,
@@ -423,7 +479,9 @@
       "category": "共通",
       "level": 2,
       "where": "ビューポート右上のグリッド/回転/スケールのスナップ設定",
-      "phrase": "Grid Snapping / Snap to Floor (Endキー)"
+      "phrase": "Grid Snapping / Snap to Floor (Endキー)",
+      "concept": "snap",
+      "match": "同義"
     },
     {
       "id": 42,
@@ -433,7 +491,9 @@
       "category": "共通",
       "level": 1,
       "where": "エディタ中央の3D表示部分。BPエディタにもある",
-      "phrase": "Viewport — タブ名"
+      "phrase": "Viewport — タブ名",
+      "concept": "viewport",
+      "match": "近い"
     },
     {
       "id": 43,
@@ -443,7 +503,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "エディタ右上に出るアクター一覧",
-      "phrase": "Outliner — パネル名"
+      "phrase": "Outliner — パネル名",
+      "concept": "outliner",
+      "match": "同義"
     },
     {
       "id": 44,
@@ -453,7 +515,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "エディタ右側。何か選択すると設定が出てくる場所",
-      "phrase": "Details — パネル名"
+      "phrase": "Details — パネル名",
+      "concept": "details-panel",
+      "match": "同義"
     },
     {
       "id": 45,
@@ -463,7 +527,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "エディタ下部のアセット一覧",
-      "phrase": "Content Browser / Content Drawer (Ctrl+Space)"
+      "phrase": "Content Browser / Content Drawer (Ctrl+Space)",
+      "concept": "content-browser",
+      "match": "同義"
     },
     {
       "id": 46,
@@ -473,7 +539,9 @@
       "category": "共通",
       "level": 1,
       "where": "コンテンツブラウザに並ぶ .uasset ファイル全般",
-      "phrase": "Save All Assets — メニュー表記"
+      "phrase": "Save All Assets — メニュー表記",
+      "concept": "asset",
+      "match": "同義"
     },
     {
       "id": 47,
@@ -503,7 +571,9 @@
       "category": "共通",
       "level": 1,
       "where": "Edit→Plugins から一覧を開き、チェックで有効化する",
-      "phrase": "Plugins / Restart Required — 有効化後に再起動を求められる"
+      "phrase": "Plugins / Restart Required — 有効化後に再起動を求められる",
+      "concept": "plugin",
+      "match": "近い"
     },
     {
       "id": 50,
@@ -513,7 +583,9 @@
       "category": "共通",
       "level": 3,
       "where": "C++プロジェクトの .Build.cs に依存を書き足すとき",
-      "phrase": "PublicDependencyModuleNames — Build.csの記述"
+      "phrase": "PublicDependencyModuleNames — Build.csの記述",
+      "concept": "module",
+      "match": "近い"
     },
     {
       "id": 51,
@@ -533,7 +605,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "コンテンツブラウザの青系アイコン。壁・床・小物に使う",
-      "phrase": "Static Mesh Component"
+      "phrase": "Static Mesh Component",
+      "concept": "static-mesh",
+      "match": "近い"
     },
     {
       "id": 53,
@@ -543,7 +617,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "キャラモデル。Skeletonアセットとセットでインポートされる",
-      "phrase": "Skeletal Mesh Component"
+      "phrase": "Skeletal Mesh Component",
+      "concept": "skeletal-mesh",
+      "match": "同義"
     },
     {
       "id": 54,
@@ -553,7 +629,9 @@
       "category": "共通",
       "level": 2,
       "where": "Skeletal Meshをダブルクリックすると開くボーン階層",
-      "phrase": "Skeleton Tree — ボーン階層のパネル名"
+      "phrase": "Skeleton Tree — ボーン階層のパネル名",
+      "concept": "skeleton",
+      "match": "近い"
     },
     {
       "id": 55,
@@ -573,7 +651,9 @@
       "category": "共通",
       "level": 1,
       "where": "武器を手に持たせるときの定番処理",
-      "phrase": "Attach Actor to Component — 追従させるノード"
+      "phrase": "Attach Actor to Component — 追従させるノード",
+      "concept": "attach",
+      "match": "近い"
     },
     {
       "id": 57,
@@ -583,7 +663,9 @@
       "category": "共通",
       "level": 1,
       "where": "メッシュのDetailsパネル、Materialsの欄で差し替える",
-      "phrase": "Element 0 — マテリアルスロットの表記"
+      "phrase": "Element 0 — マテリアルスロットの表記",
+      "concept": "material",
+      "match": "同義"
     },
     {
       "id": 58,
@@ -603,7 +685,9 @@
       "category": "共通",
       "level": 1,
       "where": "画像ファイルをコンテンツブラウザにドラッグすると作られる",
-      "phrase": "Texture Sample — マテリアルグラフのノード名"
+      "phrase": "Texture Sample — マテリアルグラフのノード名",
+      "concept": "texture",
+      "match": "同義"
     },
     {
       "id": 60,
@@ -613,7 +697,9 @@
       "category": "共通",
       "level": 2,
       "where": "マテリアルの出力ノード、Normal入力ピンに繋ぐ",
-      "phrase": "Normal — 出力ノードの入力ピン名"
+      "phrase": "Normal — 出力ノードの入力ピン名",
+      "concept": "normal-map",
+      "match": "同義"
     },
     {
       "id": 61,
@@ -623,7 +709,9 @@
       "category": "共通",
       "level": 2,
       "where": "マテリアル出力ノードのRoughness入力",
-      "phrase": "Roughness — 0〜1のスカラー値"
+      "phrase": "Roughness — 0〜1のスカラー値",
+      "concept": "roughness",
+      "match": "近い"
     },
     {
       "id": 62,
@@ -633,7 +721,9 @@
       "category": "共通",
       "level": 2,
       "where": "マテリアル出力ノードのMetallic入力",
-      "phrase": "Metallic — 通常は0か1のどちらか"
+      "phrase": "Metallic — 通常は0か1のどちらか",
+      "concept": "metallic",
+      "match": "同義"
     },
     {
       "id": 63,
@@ -643,7 +733,9 @@
       "category": "共通",
       "level": 2,
       "where": "光るマテリアルを作るとき、Emissive Colorに繋ぐ",
-      "phrase": "Emissive Color — 出力ノードの入力ピン名"
+      "phrase": "Emissive Color — 出力ノードの入力ピン名",
+      "concept": "emissive",
+      "match": "同義"
     },
     {
       "id": 64,
@@ -653,7 +745,9 @@
       "category": "共通",
       "level": 2,
       "where": "Blend ModeをTranslucentにすると使えるようになる",
-      "phrase": "Opacity / Blend Mode: Translucent"
+      "phrase": "Opacity / Blend Mode: Translucent",
+      "concept": "opacity",
+      "match": "近い"
     },
     {
       "id": 65,
@@ -663,7 +757,9 @@
       "category": "共通",
       "level": 2,
       "where": "マテリアルを変更した直後に出る Compiling Shaders の表示",
-      "phrase": "Compiling Shaders — コンパイル中の通知"
+      "phrase": "Compiling Shaders — コンパイル中の通知",
+      "concept": "shader",
+      "match": "同義"
     },
     {
       "id": 66,
@@ -673,7 +769,9 @@
       "category": "共通",
       "level": 2,
       "where": "マテリアルでTexCoordノードを使い、貼り方を調整するとき",
-      "phrase": "TexCoord / UV Channel"
+      "phrase": "TexCoord / UV Channel",
+      "concept": "uv",
+      "match": "同義"
     },
     {
       "id": 67,
@@ -683,7 +781,9 @@
       "category": "共通",
       "level": 2,
       "where": "Static Meshエディタの LOD Settings で段階を設定する",
-      "phrase": "LOD 0 / Screen Size — 切り替わる画面占有率"
+      "phrase": "LOD 0 / Screen Size — 切り替わる画面占有率",
+      "concept": "lod",
+      "match": "同義"
     },
     {
       "id": 68,
@@ -693,7 +793,9 @@
       "category": "共通",
       "level": 2,
       "where": "遠景の描画負荷を落とすとき、Cull Distanceを設定する",
-      "phrase": "Frustum Culling / Cull Distance"
+      "phrase": "Frustum Culling / Cull Distance",
+      "concept": "culling",
+      "match": "近い"
     },
     {
       "id": 69,
@@ -703,7 +805,9 @@
       "category": "共通",
       "level": 3,
       "where": "手前の物に隠れた分の描画を省く仕組み",
-      "phrase": "Occlusion Culling"
+      "phrase": "Occlusion Culling",
+      "concept": "occlusion",
+      "match": "同義"
     },
     {
       "id": 70,
@@ -713,7 +817,9 @@
       "category": "共通",
       "level": 3,
       "where": "stat rhi コマンドで現在の数を確認できる",
-      "phrase": "stat rhi — 描画統計を表示するコンソールコマンド"
+      "phrase": "stat rhi — 描画統計を表示するコンソールコマンド",
+      "concept": "draw-call",
+      "match": "同義"
     },
     {
       "id": 71,
@@ -743,7 +849,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "コンテンツブラウザ右クリック→FX→Niagara System",
-      "phrase": "Niagara System / Emitter — 作成するアセット名"
+      "phrase": "Niagara System / Emitter — 作成するアセット名",
+      "concept": "vfx",
+      "match": "近い"
     },
     {
       "id": 74,
@@ -753,7 +861,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "ツールバーのCinematics→Add Level Sequence",
-      "phrase": "Level Sequence / Track — 追加する対象"
+      "phrase": "Level Sequence / Track — 追加する対象",
+      "concept": "sequencer",
+      "match": "同義"
     },
     {
       "id": 75,
@@ -763,7 +873,9 @@
       "category": "共通",
       "level": 2,
       "where": "レベルにPost Process Volumeを置いて設定する",
-      "phrase": "Post Process Volume / Infinite Extent (Unbound)"
+      "phrase": "Post Process Volume / Infinite Extent (Unbound)",
+      "concept": "post-process",
+      "match": "同義"
     },
     {
       "id": 76,
@@ -773,7 +885,9 @@
       "category": "共通",
       "level": 2,
       "where": "画面が明るくなったり暗くなったりするとき、ここを疑う",
-      "phrase": "Auto Exposure / Min-Max Brightness"
+      "phrase": "Auto Exposure / Min-Max Brightness",
+      "concept": "exposure",
+      "match": "同義"
     },
     {
       "id": 77,
@@ -783,7 +897,9 @@
       "category": "共通",
       "level": 3,
       "where": "Post Process VolumeのLens→Depth of Field",
-      "phrase": "Focal Distance — ピントを合わせる距離"
+      "phrase": "Focal Distance — ピントを合わせる距離",
+      "concept": "depth-of-field",
+      "match": "同義"
     },
     {
       "id": 78,
@@ -793,7 +909,9 @@
       "category": "共通",
       "level": 1,
       "where": "新規レベルに最初から置かれている太陽光",
-      "phrase": "Directional Light — Ctrl+L+ドラッグで角度を変えられる"
+      "phrase": "Directional Light — Ctrl+L+ドラッグで角度を変えられる",
+      "concept": "directional-light",
+      "match": "同義"
     },
     {
       "id": 79,
@@ -803,7 +921,9 @@
       "category": "共通",
       "level": 1,
       "where": "Place Actorsパネルのライト欄から配置する",
-      "phrase": "Point Light / Attenuation Radius — 光が届く範囲"
+      "phrase": "Point Light / Attenuation Radius — 光が届く範囲",
+      "concept": "point-light",
+      "match": "同義"
     },
     {
       "id": 80,
@@ -813,7 +933,9 @@
       "category": "共通",
       "level": 1,
       "where": "Place Actorsパネルのライト欄から配置する",
-      "phrase": "Spot Light / Inner-Outer Cone Angle"
+      "phrase": "Spot Light / Inner-Outer Cone Angle",
+      "concept": "spot-light",
+      "match": "同義"
     },
     {
       "id": 81,
@@ -823,7 +945,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "新規レベルに最初からある。屋内が真っ暗なときに疑う",
-      "phrase": "Sky Light / Recapture Scene"
+      "phrase": "Sky Light / Recapture Scene",
+      "concept": "sky-light",
+      "match": "近い"
     },
     {
       "id": 82,
@@ -833,7 +957,9 @@
       "category": "共通",
       "level": 2,
       "where": "Place ActorsのDecal Actor、またはDecal Componentを追加",
-      "phrase": "Spawn Decal at Location — 弾痕を出すノード"
+      "phrase": "Spawn Decal at Location — 弾痕を出すノード",
+      "concept": "decal",
+      "match": "同義"
     },
     {
       "id": 83,
@@ -843,7 +969,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "エディタ左上のモード切替でLandscapeモードに入る",
-      "phrase": "Landscape Mode / Sculpt / Paint"
+      "phrase": "Landscape Mode / Sculpt / Paint",
+      "concept": "landscape",
+      "match": "同義"
     },
     {
       "id": 84,
@@ -873,7 +1001,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "Place ActorsのVolumes欄。Post ProcessやNav Meshもこの一種",
-      "phrase": "Trigger Volume / Nav Mesh Bounds Volume"
+      "phrase": "Trigger Volume / Nav Mesh Bounds Volume",
+      "concept": "volume",
+      "match": "近い"
     },
     {
       "id": 87,
@@ -883,7 +1013,9 @@
       "category": "共通",
       "level": 1,
       "where": "Box Collisionを置き、On Component Begin Overlapを繋ぐ",
-      "phrase": "Trigger Box / Trigger Volume"
+      "phrase": "Trigger Box / Trigger Volume",
+      "concept": "overlap",
+      "match": "近い"
     },
     {
       "id": 88,
@@ -893,7 +1025,9 @@
       "category": "共通",
       "level": 1,
       "where": "メッシュのDetailsパネル、Collisionセクション",
-      "phrase": "Collision Presets / Generate Overlap Events"
+      "phrase": "Collision Presets / Generate Overlap Events",
+      "concept": "collision",
+      "match": "近い"
     },
     {
       "id": 89,
@@ -913,7 +1047,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "Collision Responseの選択肢。壁や床は基本これ",
-      "phrase": "Block All / Block All Dynamic — プリセット名"
+      "phrase": "Block All / Block All Dynamic — プリセット名",
+      "concept": "block",
+      "match": "近い"
     },
     {
       "id": 91,
@@ -923,7 +1059,9 @@
       "category": "共通",
       "level": 1,
       "where": "On Component HitイベントのHit Resultから情報を取り出す",
-      "phrase": "Break Hit Result — 当たった位置・法線などを取得"
+      "phrase": "Break Hit Result — 当たった位置・法線などを取得",
+      "concept": "hit-result",
+      "match": "同義"
     },
     {
       "id": 92,
@@ -943,7 +1081,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "射撃判定や、視線の先にある物の取得に使う定番",
-      "phrase": "Line Trace by Channel — Start/Endを指定するノード"
+      "phrase": "Line Trace by Channel — Start/Endを指定するノード",
+      "concept": "line-trace",
+      "match": "同義"
     },
     {
       "id": 94,
@@ -953,7 +1093,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "Set Actor LocationのSweepチェックボックスにも出てくる",
-      "phrase": "Sphere Trace by Channel / Sweep — 引数名"
+      "phrase": "Sphere Trace by Channel / Sweep — 引数名",
+      "concept": "sweep",
+      "match": "同義"
     },
     {
       "id": 95,
@@ -963,7 +1105,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "Project Settings→Collisionの設定画面で定義する",
-      "phrase": "Trace Channels / Object Channels — 設定画面の見出し"
+      "phrase": "Trace Channels / Object Channels — 設定画面の見出し",
+      "concept": "channel",
+      "match": "近い"
     },
     {
       "id": 96,
@@ -973,7 +1117,9 @@
       "category": "共通",
       "level": 1,
       "where": "メッシュのDetailsパネル、PhysicsのSimulate Physicsにチェック",
-      "phrase": "Simulate Physics / Enable Gravity"
+      "phrase": "Simulate Physics / Enable Gravity",
+      "concept": "physics",
+      "match": "近い"
     },
     {
       "id": 97,
@@ -993,7 +1139,9 @@
       "category": "共通",
       "level": 2,
       "where": "爆発で周囲を吹き飛ばすときに使う",
-      "phrase": "Add Impulse / Add Radial Impulse"
+      "phrase": "Add Impulse / Add Radial Impulse",
+      "concept": "impulse",
+      "match": "同義"
     },
     {
       "id": 99,
@@ -1003,7 +1151,9 @@
       "category": "共通",
       "level": 3,
       "where": "Physics Constraint Actorで、2つの物体をつなぐとき",
-      "phrase": "Physics Constraint / Linear-Angular Limits"
+      "phrase": "Physics Constraint / Linear-Angular Limits",
+      "concept": "constraint",
+      "match": "近い"
     },
     {
       "id": 100,
@@ -1013,7 +1163,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "キャラBPのMeshを選び、Anim Classに設定する",
-      "phrase": "Anim Graph / Event Blueprint Update Animation"
+      "phrase": "Anim Graph / Event Blueprint Update Animation",
+      "concept": "anim-blueprint",
+      "match": "同義"
     },
     {
       "id": 101,
@@ -1023,7 +1175,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "アニメ右クリック→Create AnimMontage。攻撃モーションの定番",
-      "phrase": "Play Montage / Montage Section"
+      "phrase": "Play Montage / Montage Section",
+      "concept": "anim-clip",
+      "match": "近い"
     },
     {
       "id": 102,
@@ -1033,7 +1187,9 @@
       "category": "共通",
       "level": 2,
       "where": "Anim BPのAnim Graph内に置き、Idle/Run/Jumpなどを繋ぐ",
-      "phrase": "State Machine / Transition Rule — 遷移条件"
+      "phrase": "State Machine / Transition Rule — 遷移条件",
+      "concept": "state-machine",
+      "match": "同義"
     },
     {
       "id": 103,
@@ -1043,7 +1199,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "コンテンツブラウザ右クリック→Animation→Blend Space",
-      "phrase": "Blend Space 1D / Horizontal Axis"
+      "phrase": "Blend Space 1D / Horizontal Axis",
+      "concept": "blend-space",
+      "match": "同義"
     },
     {
       "id": 104,
@@ -1053,7 +1211,9 @@
       "category": "共通",
       "level": 3,
       "where": "アニメアセットのDetailsでEnable Root Motionにチェック",
-      "phrase": "Enable Root Motion / Root Motion Mode"
+      "phrase": "Enable Root Motion / Root Motion Mode",
+      "concept": "root-motion",
+      "match": "同義"
     },
     {
       "id": 105,
@@ -1063,7 +1223,9 @@
       "category": "共通",
       "level": 3,
       "where": "別体格のスケルトンにアニメを流用したいとき",
-      "phrase": "IK Retargeter / Retarget Animations"
+      "phrase": "IK Retargeter / Retarget Animations",
+      "concept": "retarget",
+      "match": "近い"
     },
     {
       "id": 106,
@@ -1073,7 +1235,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "アニメエディタのタイムライン下、Notifiesの帯を右クリック",
-      "phrase": "Anim Notify — 足音や攻撃判定の発火に使う"
+      "phrase": "Anim Notify — 足音や攻撃判定の発火に使う",
+      "concept": "anim-notify",
+      "match": "同義"
     },
     {
       "id": 107,
@@ -1103,7 +1267,9 @@
       "category": "共通",
       "level": 2,
       "where": "Nav Mesh Bounds Volumeを置き、Pキーで緑の床が出るか確認する",
-      "phrase": "Nav Mesh Bounds Volume / P key — 可視化のショートカット"
+      "phrase": "Nav Mesh Bounds Volume / P key — 可視化のショートカット",
+      "concept": "nav-mesh",
+      "match": "同義"
     },
     {
       "id": 110,
@@ -1113,7 +1279,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "AI ControllerにAI Perception Componentを追加してSightを設定",
-      "phrase": "AI Perception / On Target Perception Updated"
+      "phrase": "AI Perception / On Target Perception Updated",
+      "concept": "ai-controller",
+      "match": "近い"
     },
     {
       "id": 111,
@@ -1123,7 +1291,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "先にStructを作り、それを行の構造に指定して作成する",
-      "phrase": "Get Data Table Row / Row Name"
+      "phrase": "Get Data Table Row / Row Name",
+      "concept": "data-asset",
+      "match": "同義"
     },
     {
       "id": 112,
@@ -1133,7 +1303,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "Primary Data Assetを継承したBPを作り、設定値を持たせる",
-      "phrase": "Data Asset / Primary Asset Type"
+      "phrase": "Data Asset / Primary Asset Type",
+      "concept": "data-asset",
+      "match": "同義"
     },
     {
       "id": 113,
@@ -1143,7 +1315,9 @@
       "category": "共通",
       "level": 1,
       "where": "コンテンツブラウザ右クリック→Blueprints→Structure",
-      "phrase": "Break / Make — 構造体を分解・生成するノード"
+      "phrase": "Break / Make — 構造体を分解・生成するノード",
+      "concept": "struct",
+      "match": "同義"
     },
     {
       "id": 114,
@@ -1153,7 +1327,9 @@
       "category": "共通",
       "level": 1,
       "where": "コンテンツブラウザ右クリック→Blueprints→Enumeration",
-      "phrase": "Switch on Enum — 値ごとに処理を分岐させる"
+      "phrase": "Switch on Enum — 値ごとに処理を分岐させる",
+      "concept": "enum",
+      "match": "同義"
     },
     {
       "id": 115,
@@ -1163,7 +1339,9 @@
       "category": "共通",
       "level": 1,
       "where": "変数の型欄の右にあるアイコンでArrayに切り替える",
-      "phrase": "Add / Get (a copy) / For Each Loop"
+      "phrase": "Add / Get (a copy) / For Each Loop",
+      "concept": "array",
+      "match": "同義"
     },
     {
       "id": 116,
@@ -1173,7 +1351,9 @@
       "category": "共通",
       "level": 2,
       "where": "変数の型アイコンでMapに切り替え、KeyとValueの型を指定する",
-      "phrase": "Find — キーを指定して値を取り出すノード"
+      "phrase": "Find — キーを指定して値を取り出すノード",
+      "concept": "map",
+      "match": "同義"
     },
     {
       "id": 117,
@@ -1183,7 +1363,9 @@
       "category": "共通",
       "level": 2,
       "where": "変数の型アイコンでSetに切り替える",
-      "phrase": "Contains — 含まれているかを調べるノード"
+      "phrase": "Contains — 含まれているかを調べるノード",
+      "concept": "set",
+      "match": "同義"
     },
     {
       "id": 118,
@@ -1193,7 +1375,9 @@
       "category": "UE固有",
       "level": 3,
       "where": "Project Settings→GameplayTagsで階層的に定義する",
-      "phrase": "Has Tag — State.Stunned のようなドット区切りの表記"
+      "phrase": "Has Tag — State.Stunned のようなドット区切りの表記",
+      "concept": "gameplay-tag",
+      "match": "近い"
     },
     {
       "id": 119,
@@ -1203,7 +1387,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "C++のヘッダで、変数宣言の直前の行に書く",
-      "phrase": "UPROPERTY(EditAnywhere, BlueprintReadWrite)"
+      "phrase": "UPROPERTY(EditAnywhere, BlueprintReadWrite)",
+      "concept": "expose-property",
+      "match": "近い"
     },
     {
       "id": 120,
@@ -1223,7 +1409,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "C++のヘッダで、class宣言の直前の行に書く",
-      "phrase": "UCLASS(Blueprintable) — 継承BPを作れるようにする"
+      "phrase": "UCLASS(Blueprintable) — 継承BPを作れるようにする",
+      "concept": "script-base",
+      "match": "近い"
     },
     {
       "id": 122,
@@ -1233,7 +1421,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "C++で構造体を作り、BPからも使いたいとき",
-      "phrase": "USTRUCT(BlueprintType) + GENERATED_BODY()"
+      "phrase": "USTRUCT(BlueprintType) + GENERATED_BODY()",
+      "concept": "ustruct",
+      "match": "近い"
     },
     {
       "id": 123,
@@ -1253,7 +1443,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "エディタのDetailsパネルで値を触りたい変数に付ける",
-      "phrase": "EditAnywhere — EditDefaultsOnlyとの違いに注意"
+      "phrase": "EditAnywhere — EditDefaultsOnlyとの違いに注意",
+      "concept": "expose-property",
+      "match": "近い"
     },
     {
       "id": 125,
@@ -1263,7 +1455,9 @@
       "category": "共通",
       "level": 2,
       "where": "変数の目玉アイコン、またはExpose on Spawnのチェック",
-      "phrase": "Expose on Spawn / Instance Editable"
+      "phrase": "Expose on Spawn / Instance Editable",
+      "concept": "expose-property",
+      "match": "近い"
     },
     {
       "id": 126,
@@ -1283,7 +1477,9 @@
       "category": "共通",
       "level": 2,
       "where": ".cppや.hの先頭。UEでは .generated.h を最後に書く決まりがある",
-      "phrase": "#include \"MyActor.generated.h\" — 必ず最後の行に置く"
+      "phrase": "#include \"MyActor.generated.h\" — 必ず最後の行に置く",
+      "concept": "include",
+      "match": "近い"
     },
     {
       "id": 128,
@@ -1303,7 +1499,9 @@
       "category": "UE固有",
       "level": 3,
       "where": "変数のDetailsパネル、Replicationを Replicated に変更する",
-      "phrase": "Replicated / RepNotify — 変更時に通知を飛ばす"
+      "phrase": "Replicated / RepNotify — 変更時に通知を飛ばす",
+      "concept": "replication",
+      "match": "近い"
     },
     {
       "id": 130,
@@ -1313,7 +1511,9 @@
       "category": "UE固有",
       "level": 3,
       "where": "Switch Has Authorityノードで、サーバー側の処理を分ける",
-      "phrase": "Switch Has Authority — Authority / Remote に分岐"
+      "phrase": "Switch Has Authority — Authority / Remote に分岐",
+      "concept": "authority",
+      "match": "近い"
     },
     {
       "id": 131,
@@ -1323,7 +1523,9 @@
       "category": "UE固有",
       "level": 3,
       "where": "エフェクトや音を全員に見せたいときの通信種別",
-      "phrase": "UFUNCTION(NetMulticast, Reliable)"
+      "phrase": "UFUNCTION(NetMulticast, Reliable)",
+      "concept": "multicast",
+      "match": "近い"
     },
     {
       "id": 132,
@@ -1333,7 +1535,9 @@
       "category": "共通",
       "level": 3,
       "where": "RPCを宣言するとき、Unreliableとどちらかを選ぶ",
-      "phrase": "Reliable / Unreliable — 乱発すると帯域を圧迫する"
+      "phrase": "Reliable / Unreliable — 乱発すると帯域を圧迫する",
+      "concept": "reliable",
+      "match": "同義"
     },
     {
       "id": 133,
@@ -1343,7 +1547,9 @@
       "category": "共通",
       "level": 2,
       "where": "ネット対戦のテストで Net PktLag を使って疑似的に再現する",
-      "phrase": "ping / Net PktLag — 遅延を作るコンソールコマンド"
+      "phrase": "ping / Net PktLag — 遅延を作るコンソールコマンド",
+      "concept": "latency",
+      "match": "同義"
     },
     {
       "id": 134,
@@ -1363,7 +1569,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "Widget Blueprintを開いたときのDesigner画面全体",
-      "phrase": "Designer / Graph — UMGエディタのタブ"
+      "phrase": "Designer / Graph — UMGエディタのタブ",
+      "concept": "ui-system",
+      "match": "近い"
     },
     {
       "id": 136,
@@ -1373,7 +1581,9 @@
       "category": "UE固有",
       "level": 3,
       "where": "エディタ拡張をC++で書くときに触れる",
-      "phrase": "SNew / SCompoundWidget — C++での記述"
+      "phrase": "SNew / SCompoundWidget — C++での記述",
+      "concept": "ui-system-new",
+      "match": "近い"
     },
     {
       "id": 137,
@@ -1383,7 +1593,9 @@
       "category": "共通",
       "level": 1,
       "where": "Game ModeのHUD Class、または単にWidgetで作る画面表示",
-      "phrase": "HUD Class — Game Modeの設定項目"
+      "phrase": "HUD Class — Game Modeの設定項目",
+      "concept": "hud",
+      "match": "近い"
     },
     {
       "id": 138,
@@ -1393,7 +1605,9 @@
       "category": "共通",
       "level": 2,
       "where": "UMGで部品を選ぶと出る、花びら状のアイコン",
-      "phrase": "Anchors — 画面の四隅・中央から選ぶ"
+      "phrase": "Anchors — 画面の四隅・中央から選ぶ",
+      "concept": "anchor",
+      "match": "同義"
     },
     {
       "id": 139,
@@ -1433,7 +1647,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "Save Gameを継承したBPを作り、保存したい変数を並べる",
-      "phrase": "Save Game to Slot / Load Game from Slot"
+      "phrase": "Save Game to Slot / Load Game from Slot",
+      "concept": "save-game",
+      "match": "近い"
     },
     {
       "id": 143,
@@ -1443,7 +1659,9 @@
       "category": "UE固有",
       "level": 3,
       "where": "右クリック→Editor Utilities→Editor Utility Widget、右クリック→Run",
-      "phrase": "Run Editor Utility Widget"
+      "phrase": "Run Editor Utility Widget",
+      "concept": "editor-tool",
+      "match": "同義"
     },
     {
       "id": 144,
@@ -1453,7 +1671,9 @@
       "category": "共通",
       "level": 2,
       "where": "Platforms→Windows→Package Project",
-      "phrase": "Package Project — 出力先フォルダを聞かれる"
+      "phrase": "Package Project — 出力先フォルダを聞かれる",
+      "concept": "package",
+      "match": "近い"
     },
     {
       "id": 145,
@@ -1483,7 +1703,9 @@
       "category": "UE固有",
       "level": 2,
       "where": "開発中の動作確認は、この構成でパッケージする",
-      "phrase": "Build Configuration: Development"
+      "phrase": "Build Configuration: Development",
+      "concept": "development",
+      "match": "同義"
     },
     {
       "id": 148,
@@ -1493,7 +1715,9 @@
       "category": "共通",
       "level": 2,
       "where": "Tools→Session Frontend、またはUnreal Insightsを使う",
-      "phrase": "Unreal Insights / stat unit — フレーム内訳を表示"
+      "phrase": "Unreal Insights / stat unit — フレーム内訳を表示",
+      "concept": "profiler",
+      "match": "同義"
     },
     {
       "id": 149,
@@ -1503,7 +1727,9 @@
       "category": "共通",
       "level": 2,
       "where": "BPのノードを選んでF9を押すと赤い丸が付く",
-      "phrase": "Toggle Breakpoint (F9) — BPノードにも設定できる"
+      "phrase": "Toggle Breakpoint (F9) — BPノードにも設定できる",
+      "concept": "breakpoint",
+      "match": "同義"
     },
     {
       "id": 150,
@@ -1513,7 +1739,9 @@
       "category": "UE固有",
       "level": 1,
       "where": "動作確認のため、とりあえず挟んでみる定番ノード",
-      "phrase": "Print String — Durationで表示時間を調整できる"
+      "phrase": "Print String — Durationで表示時間を調整できる",
+      "concept": "print-string",
+      "match": "同義"
     },
     {
       "id": 151,
@@ -1523,7 +1751,9 @@
       "category": "共通",
       "level": 2,
       "where": "古い記事のノードを使うと、赤字でこの警告が出る",
-      "phrase": "DEPRECATED — ノード名に付く警告表示"
+      "phrase": "DEPRECATED — ノード名に付く警告表示",
+      "concept": "deprecated",
+      "match": "同義"
     },
     {
       "id": 152,
@@ -1533,7 +1763,9 @@
       "category": "共通",
       "level": 2,
       "where": "BPが巨大化したとき、関数化やマクロ化で整理する",
-      "phrase": "Collapse to Function — 選択ノードを関数にまとめる"
+      "phrase": "Collapse to Function — 選択ノードを関数にまとめる",
+      "concept": "refactor",
+      "match": "同義"
     },
     {
       "id": 153,
@@ -1543,7 +1775,9 @@
       "category": "共通",
       "level": 3,
       "where": "リプレイやネット同期で、結果を一致させたいときに問題になる",
-      "phrase": "deterministic — 乱数シードを固定して再現性を確保する"
+      "phrase": "deterministic — 乱数シードを固定して再現性を確保する",
+      "concept": "deterministic",
+      "match": "同義"
     },
     {
       "id": 154,
@@ -1553,7 +1787,9 @@
       "category": "共通",
       "level": 2,
       "where": "AI Perceptionの検知距離や、アニメの遷移条件などで設定する",
-      "phrase": "Threshold — 各種設定の項目名"
+      "phrase": "Threshold — 各種設定の項目名",
+      "concept": "threshold",
+      "match": "同義"
     },
     {
       "id": 155,
@@ -1563,7 +1799,9 @@
       "category": "共通",
       "level": 2,
       "where": "カメラを滑らかに追従させるときに使う",
-      "phrase": "FInterp To / VInterp To / Lerp"
+      "phrase": "FInterp To / VInterp To / Lerp",
+      "concept": "interpolate",
+      "match": "同義"
     },
     {
       "id": 156,
@@ -1573,7 +1811,9 @@
       "category": "共通",
       "level": 2,
       "where": "HPが0未満やMax超過にならないよう、計算結果を挟む",
-      "phrase": "Clamp (Float) — Min/Maxを指定する"
+      "phrase": "Clamp (Float) — Min/Maxを指定する",
+      "concept": "clamp",
+      "match": "同義"
     },
     {
       "id": 157,
@@ -1583,7 +1823,9 @@
       "category": "共通",
       "level": 2,
       "where": "移動方向のベクトルを、速度と掛ける前に必ず通す",
-      "phrase": "Normalize — 長さを1にそろえる"
+      "phrase": "Normalize — 長さを1にそろえる",
+      "concept": "normalize",
+      "match": "同義"
     },
     {
       "id": 158,
@@ -1593,7 +1835,9 @@
       "category": "共通",
       "level": 1,
       "where": "カメラ位置や、Spring Armのソケット位置の調整で出てくる",
-      "phrase": "Socket Offset / Target Offset"
+      "phrase": "Socket Offset / Target Offset",
+      "concept": "offset",
+      "match": "同義"
     },
     {
       "id": 159,
@@ -1603,7 +1847,9 @@
       "category": "共通",
       "level": 2,
       "where": "レベルストリーミングで、常に読み込まれている親レベルを指す",
-      "phrase": "Persistent Level — レベル階層の一番上"
+      "phrase": "Persistent Level — レベル階層の一番上",
+      "concept": "persistent",
+      "match": "近い"
     },
     {
       "id": 160,
@@ -1613,7 +1859,9 @@
       "category": "UE固有",
       "level": 3,
       "where": "BPのコンポーネントや、Instanced Static Meshで出てくる",
-      "phrase": "Instanced Static Mesh Component (ISM) / HISM"
+      "phrase": "Instanced Static Mesh Component (ISM) / HISM",
+      "concept": "instanced",
+      "match": "近い"
     }
   ]
 }

@@ -1,148 +1,132 @@
-# Spell Engine Library (SEL) — Unreal Engine 編
+# Spell Engine Library (SEL)
 
-ゲームエンジン開発でよく使う英単語を、意味と紐づけながら身体で覚えるためのブラウザ用学習ツールです。まずは Unreal Engine 編。今後 Unity 版・Godot 版を追加予定です。
+ゲームエンジン開発でよく使う英単語を、**意味・エディタ上での使用場面・実際のノード名 / API 名**とセットで覚えるためのブラウザ用学習ツールです。
 
-**▶ [ここで遊べます](https://typing-terms.bullmus-vg.workers.dev/)**
+**▶ [https://typing-terms.bullmus-vg.workers.dev/](https://typing-terms.bullmus-vg.workers.dev/)**
 
----
-
-## 特徴
-
-- インストール不要。ブラウザだけで動きます
-- 収録語数 160 語（UE固有 71 / 共通 89、Lv1〜3）
-- 間違えた単語を記録して、次回から優先的に出題します
-- ノーミスで繰り返し正解すると苦手リストから「卒業」します
-- アプリ名称・説明文は `index.html` 内の `APP_INFO`、調整用の数値は `CONFIG` に集約しています
+- タイピング / 4択で出題し、間違えた語は苦手リストにためて繰り返し出題（卒業ロジックあり）
+- **エンジンをまたいで対応する用語を相互参照できる**のが特徴（UE の `Level` ⇔ Unity の `Scene` など、現在 120 組）
+- 収録: Unreal Engine 編 160 語 / Unity 編 154 語（合計 314 語）。Godot 編・Verse 編は準備中
 
 ---
 
-## 2つのモード
+## URL 構成
 
-| モード | 内容 |
+| URL | 内容 |
 | --- | --- |
-| タイピングモード | 日本語の意味を見て、対応する英単語を打つ |
-| 4択モード | 英単語を見て、その意味を4つの選択肢から選ぶ |
+| `/` | SEL トップ。各エンジン版へのリンク＋**全エンジン横断の統合辞典**（調べる用途に特化、学習機能なし） |
+| `/ue/` | Unreal Engine 編（学習アプリ） |
+| `/unity/` | Unity 編（学習アプリ） |
+| `/data/words-ue.json` | UE 版データ |
+| `/data/words-unity.json` | Unity 版データ |
 
-どちらも **1セット10問** です。
-
-### ミスタイプ制御
-
-先に進ませない方式を採っています。うろ覚えのまま流してしまわないための設計です。
-
-- タイピングモードは1文字ずつ照合し、違うキーは赤いフラッシュとシェイクで弾きます。正しいキーを打つまで確定しません
-- 4択モードは誤答のボタンが赤くなって無効化され、正解を選ぶまで次に進めません
-
-### スキップ（タイピングモード）
-
-分からない単語は <kbd>Esc</kbd> キーでスキップできます。キーボードだけで完結します。
-
-- スキップすると正解の綴りが表示されます（覚える機会を潰さないため）
-- スキップした単語は強制的に苦手リスト入りとなり、`skip` カウントが増えます
-- 正答率では不正解として数えます
-- WPM の計算からは除外します（文字数・時間の両方）
-
-### 使用場面と例文
-
-正解した直後、およびスキップした直後に、その単語の **どこで使う**（`where`）と **実際の表記**（`phrase`）を表示します。出題中はヒントにならないよう表示しません。表示中に任意のキー（タッチデバイスではタップ）を押すと即座に次へ進みます。固定の待ち時間はありません。
-
-### 結果表示
-
-セット終了時に以下を表示します。**このツールの目的は単語を覚えることなので、速さの指標は控えめに置いています。**
-
-- 主指標:
-  - **正答率** = 最後まで正解の綴りを打ち切った問題数 ÷ 全問題数（途中でミスタイプしても最後に打ち切れば正解に数える。スキップは不正解）
-  - **ノーミスで正解** = 一度もミスせずに打ち切った問題数
-- 副指標（小さめ）: WPM（標準式: 総文字数 ÷ 5 ÷ 経過分。スキップ分は文字数・時間とも除外。除外後に対象が無ければ「-」）/ 所要時間 / スキップ数 / ミスあり数
-- 間違えた・スキップした単語の一覧（`where` / `phrase` 付き）
+`/ue` のように末尾スラッシュ無しでアクセスすると `/ue/` にリダイレクトされます（`wrangler.jsonc` の `html_handling`）。未知パスは 404 です。
 
 ---
 
-## 苦手リスト
+## ディレクトリ構成
 
-単語ごとの記録を `localStorage`（キー: `sel_weakWords_v1`）に保存します。次回以降は `miss + skip` の合計が多い単語から優先的に出題されます。
-
-```json
-{
-  "ue:89": { "miss": 3, "skip": 1, "clean": 0 },
-  "ue:36": { "miss": 5, "skip": 0, "clean": 2 }
-}
+```
+/
+├─ public/                Cloudflare Workers の配信対象 (assets.directory)
+│  ├─ index.html          SEL トップ (薄いページ。SEL_PAGE 設定 + hub.js)
+│  ├─ ue/index.html       Unreal Engine 編 (薄いページ。SEL_PAGE 設定 + engine.js)
+│  ├─ unity/index.html    Unity 編
+│  ├─ assets/
+│  │  ├─ sel.css          全ページ共通スタイル
+│  │  ├─ sel-common.js    共通コード (window.SEL): ENGINES 登録簿 / データ読込 / 相互参照 / メタ設定
+│  │  ├─ engine.js        学習アプリ本体 (エンジンページで読む)
+│  │  └─ hub.js           トップページの統合辞典 (トップで読む)
+│  ├─ data/
+│  │  ├─ words-ue.json    UE 版データ (編集はここを直接)
+│  │  └─ words-unity.json Unity 版データ
+│  ├─ favicon.svg / favicon.ico / apple-touch-icon.png
+│  └─ .assetsignore       配信から除外するファイル
+└─ wrangler.jsonc         Cloudflare Workers 静的アセット配信設定
 ```
 
-- キーには `ue:` のようにエンジン識別子を前置しています（今後の Unity版・Godot版との ID 衝突を避けるため）
-- `miss` はタイプミス回数、`skip` はスキップ回数
-- `clean` は連続ノーミス正解回数。旧データで欠けている場合は `0` として扱います
-- 旧キー `ueTypingTerms_weakWords_v1`（ミス回数を数値で保持）が残っている場合は、起動時に `{ "miss": 旧の数値, "skip": 0, "clean": 0 }` へ変換して新キーへ移行し、旧キーは削除します
-- 設定画面のチェックボックスでON/OFFを切り替えられます
-- 「苦手リストをリセット」ボタンで `sel_weakWords_v1` を消去できます（`sel_wordProgress_v1` の学習履歴は残します）
+> `public/` を配信ディレクトリにしているのは、`wrangler dev` の監視対象から
+> 生成物 (`.wrangler/`) や `node_modules/`・`README.md` を隔離するためです。
+> リポジトリ直下を `assets.directory` にすると、`.wrangler/` への書き込みで
+> リロードが自己誘発され `wrangler dev` が無限ループします。
 
-記録はブラウザごとにローカル保存されます。サーバーには何も送信していません。
-
-### 卒業ロジック
-
-苦手リストに残り続けないよう、次の規則で単語を外します。
-
-- その単語にノーミスで正解すると `clean` が +1
-- ミスまたはスキップが発生すると `clean` は `0` にリセット
-- `clean` が **卒業に必要な回数**（`CONFIG.graduateCleanStreak`、初期値 3）に達したら苦手リストから削除
-
-卒業に必要な回数は後で調整できるよう `index.html` 冒頭の `CONFIG` に集約しています。
-
-### 苦手単語帳
-
-設定画面の「📓 苦手単語帳」から、記録された苦手単語の一覧を確認できます。
-
-- ミス回数の多い順に、英単語・意味・ミス回数・スキップ回数・`clean` 回数・カテゴリ/レベルのチップを表示
-- 「卒業まであと N 回」を各行に表示
-- 行をクリックすると展開し、`note` / `where` / `phrase` を表示
-- この画面にも「苦手リストをリセット」ボタンがあります
+各エンジンページは **HTML 側にロジックを持たず**、`window.SEL_PAGE` で設定を渡して `/assets/engine.js` を読み込むだけです。新エンジンの追加が薄いページ 1 枚＋データ＋登録簿 1 行で済みます（後述）。
 
 ---
 
-## 単語一覧（辞書）
+## データの持ち方
 
-設定画面の「📖 単語一覧」から、収録している全単語（現在160語）を閲覧できます。出題を待たずに、UEで見かけた語を能動的に調べられます。
+学習アプリで他エンジンの語を引く必要があるため、単語データは外部 JSON です。
 
-- 各行に **英単語 / 日本語の意味 / カテゴリ・レベルのチップ / 学習状況ラベル** を表示。行をクリックで `note` / `where` / `phrase` を展開
-- **検索**: 入力欄ひとつで `en` / `ja` / `note` / `where` / `phrase` を横断（部分一致・大文字小文字を区別しない・インクリメンタル）。UEのノード名からも引けます（例:「On Component Begin Overlap」→ Overlap）
-- **絞り込み**: カテゴリ / レベル / 学習状況で絞れます（「未出題だけ表示」など）
-- **進捗**: 画面上部に「全160語 / 未出題 / 学習中 / 卒業 / 正解済み」を表示
+- 各ページは **自分のエンジンのデータ**（必須）と、**他の公開エンジンのデータ**（相互参照用・任意）を `fetch` で読み込みます
+- 自分のデータの読み込みに失敗したら、その旨のエラー画面を表示します
+- 他エンジンのデータの読み込みに失敗しても、相互参照が出なくなるだけで本体は動きます
+- `file://` では `fetch` が使えないため動きません。ローカル確認は `npx wrangler dev`（または任意の静的サーバー）を使ってください
 
-### 学習状況の記録
+---
 
-各単語の状況は次の4つ。`sel_weakWords_v1` と `wordStatus()` から判定します。
+## 各エンジンページの機能
 
-| ラベル | 条件 |
+`/ue/` `/unity/` で共通に動きます（`assets/engine.js`）。
+
+- **モード**: タイピング（意味 → 英単語を打つ）/ 4択（英単語 → 意味を選ぶ）。1セット10問
+- **ミスタイプ制御**: 正しいキーを打つまで進ませない。4択も正解を選ぶまで進まない
+- **スキップ**: タイピング中に <kbd>Esc</kbd>。正解の綴りを表示してから次へ。skip は不正解扱い、WPM から除外
+- **正解 / スキップ直後の表示**: `where`（どこで使う）/ `phrase`（実際の表記）/ **他エンジンでの呼び方**。任意のキー（タッチはタップ）で次へ
+- **結果**: 主指標＝正答率・ノーミス数、副指標（小）＝WPM・所要時間・スキップ・ミスあり。間違えた/スキップした単語一覧
+- **苦手リスト**: ミス / スキップした語を記録し優先出題。連続ノーミス正解 `CONFIG.graduateCleanStreak`（=3）回で卒業（削除）
+- **苦手単語帳**: 苦手語の一覧。行クリックで `note` / `where` / `phrase` / 他エンジンでの呼び方を展開
+- **単語一覧（辞書）**: 収録全語の閲覧。横断検索・カテゴリ/レベル/学習状況フィルタ・進捗表示
+- **カテゴリのチップはそのページのデータから動的生成**（UE は「UE固有 / 共通」、Unity は「Unity固有 / 共通」）
+- ヘッダーに **SEL トップへのリンク**と**他エンジン版への切り替えリンク**
+
+### 記録の分離（エンジン間で混ざらない）
+
+localStorage は全エンジンで同じキーを使い、**中身のキーを `ue:` / `unity:` で前置**して分離します。各ページは自分の接頭辞の分だけを読み書き・集計します。
+
+| キー | 内容 |
 | --- | --- |
-| 未出題 | まだ一度も出題されていない |
-| 学習中 | 苦手リスト（`sel_weakWords_v1`）に入っている |
-| 卒業 | 苦手リストから卒業したことがある |
-| 正解済み | 出題されたが、苦手リストに入らなかった（＝毎回ノーミス正解） |
+| `sel_weakWords_v1` | 苦手リスト。`{ "ue:89": { miss, skip, clean }, "unity:1001": {…} }` |
+| `sel_wordProgress_v1` | 学習履歴。`{ "ue:89": { seen: true, graduated: true } }`（フラグ無し＝未設定） |
+| `ueTypingTerms_weakWords_v1` | UE 旧ツールのキー。UE 版のみ起動時に新形式へ移行して削除 |
 
-「出題されたことがあるか（`seen`）」「卒業したことがあるか（`graduated`）」は、`sel_weakWords_v1` の構造を壊さないよう **別キー** `sel_wordProgress_v1` に保持します。
-
-```json
-{
-  "ue:89": { "seen": true },
-  "ue:1":  { "seen": true, "graduated": true }
-}
-```
-
-- フラグが無ければ未設定（`false`）として扱うため、旧データからの移行は不要です
-- 「苦手リストをリセット」してもこの記録は残ります（学習履歴のため）
+「苦手リストをリセット」は**そのエンジンの分だけ**消去します（`sel_wordProgress_v1` の学習履歴は残します）。
 
 ---
 
-## 絞り込み
+## エンジン間の相互参照
 
-カテゴリ（共通 / UE固有）と難易度（Lv1〜3）で出題範囲を絞れます。
+単語データの 2 フィールドで表現します。
 
-チップは単語データの内容から動的に生成しているので、**データ側にカテゴリや難易度を追加すれば、UIにも自動で反映されます。**
+| フィールド | 内容 |
+| --- | --- |
+| `concept` | エンジン横断の概念キー。同じ値を持つ語どうしが対応する（例: UE `Level` と Unity `Scene` が共に `"scene"`）。対応物が無い語には付けない |
+| `match` | その対応の強さ。`"同義"` または `"近い"` |
+
+- `concept` が一致する他エンジンの語を引いて「他エンジンでの呼び方」欄に表示（**苦手単語帳・単語一覧の展開表示、ゲーム中の正解/スキップ後、結果画面の一覧**）
+- `"同義"` は緑バッジ、`"近い"` は黄バッジ＋「完全に同じではない」の注記で見た目を分ける（例: `Roughness` と `Smoothness` は値の向きが逆なので「同義」として覚えると誤る）
+- `concept` が複数エンジンに対応する場合は全て表示
+- **単語一覧の横断検索は、対応する他エンジンの英語表記も対象**（UE 版で「Scene」と検索すると `Level` がヒットする）
+
+---
+
+## トップページの統合辞典
+
+`/` に、全エンジンの単語を横断して引ける辞典があります（`assets/hub.js`）。
+
+- **学習記録（localStorage）には一切触れません。** 読み取りもしません
+- 全エンジンの単語を 1 リストに統合表示（現在 314 語）。各行に 英単語 / 意味 / エンジンのチップ / カテゴリ・レベルのチップ
+- 行クリックで `note` / `where` / `phrase` / 他エンジンでの呼び方を展開（`DETAIL_FIELDS` を各ページと共用）
+- 横断検索の対象: `en` / `ja` / `note` / `where` / `phrase` ＋ 対応する他エンジンの英語表記
+- 絞り込み: エンジン / カテゴリ / レベル
+- **「対応語のみ表示」**: オンにすると `concept` で対応が付いている語だけに絞り、UE の語と Unity の語を対（グループ）で表示。現在 120 組
+- Godot 編・Verse 編を公開すると、`ENGINES` 登録簿の `status` を `public` にするだけで自動的にこの辞典に含まれます
 
 ---
 
 ## 単語データの追加・編集
 
-実行時に使われるのは `index.html` 内の `WORDS_DATA` 配列(1つだけ)です。外部ファイルには依存していないので、この配列に以下の形式で追記してください。リポジトリ同梱の `words.json`（160語、全単語に `where` / `phrase` あり）は編集元のマスターデータで、`WORDS_DATA` はここから生成しています。
+`data/words-ue.json` / `data/words-unity.json` を直接編集します（`{ "meta": {...}, "words": [ ... ] }` 形式）。
 
 ```json
 {
@@ -150,85 +134,105 @@
   "en": "Overlap",
   "ja": "重なり / すり抜けつつ検知",
   "note": "ぶつからずに通過しつつ、重なりだけ検知する状態。",
-  "where": "コリジョン設定やオーバーラップイベントで登場する。",
-  "phrase": "OnComponentBeginOverlap",
+  "where": "Collision Response で Block / Overlap / Ignore から選ぶ",
+  "phrase": "On Component Begin Overlap — 重なり開始イベント",
   "category": "UE固有",
-  "level": 1
+  "level": 1,
+  "concept": "overlap",
+  "match": "同義"
 }
 ```
 
 | フィールド | 内容 |
 | --- | --- |
-| `id` | 一意の番号。苦手リストの記録に使うため、既存の値は変更しないでください |
-| `en` | 英単語・英語表記 |
-| `ja` | 日本語の意味 |
-| `note` | 一言解説（出題中にヒントとして表示） |
-| `where` | 「どこで使う」（UEのどこで遭遇するか）。正解／スキップ後と苦手単語帳で表示 |
-| `phrase` | 「実際の表記」（ノード名・設定項目名・C++の書き方）。正解／スキップ後と苦手単語帳で表示 |
-| `category` | `共通` または `UE固有` |
+| `id` | 一意の番号。記録に使うため既存の値は変えない。UE は 1〜、Unity は 1001〜 |
+| `en` / `ja` | 英単語 / 日本語の意味 |
+| `note` | 一言解説（出題中にヒント表示） |
+| `where` | 「どこで使う」。正解/スキップ後・展開表示で出る（任意） |
+| `phrase` | 「実際の表記」（ノード名・API 名・C++/C# の書き方）。同上（任意） |
+| `category` | `共通` または `<エンジン>固有` |
 | `level` | `1`（頻出基礎）/ `2`（中級）/ `3`（応用） |
+| `concept` / `match` | エンジン間の対応（上記「相互参照」参照。任意） |
 
-`where` / `phrase` は未設定でも動作します（その場合その行は表示されません）。現在は全 160 語に登録済みです。
+### 展開表示に出すフィールドを増やす
 
-### 展開表示フィールドの追加（エンジン間の対応語など）
+`assets/sel-common.js` の `DETAIL_FIELDS` に 1 行足すだけで、単語一覧・苦手単語帳・統合辞典すべての展開表示に反映されます。検索対象にも含めたい場合は `assets/engine.js` の `buildSearchIndex()` と `assets/hub.js` の `buildSearchIndex()` の配列にキーを追加します。
 
-各単語オブジェクトは自由にフィールドを増やせます。展開表示（単語一覧・苦手単語帳）に出したいフィールドは `index.html` 冒頭の `DETAIL_FIELDS` に1行足すだけです。検索対象も `buildSearchIndex()` の配列に加えれば横断検索に含められます。
+---
 
-```js
-const DETAIL_FIELDS = [
-  { key: "note",   label: "note" },
-  { key: "where",  label: "where" },
-  { key: "phrase", label: "phrase" },
-  // 例: エンジン間の対応語を扱うとき
-  // { key: "equivalents", label: "他エンジンでの呼び名" },
-];
+## 新しいエンジンの追加（例: Godot 編）
+
+1. **データを用意** — `public/data/words-godot.json` を作る。`id` は他とかぶらない帯（例 2001〜）。`concept` を既存の値に合わせると相互参照される
+2. **登録簿を更新** — `public/assets/sel-common.js` の `ENGINES` の該当行を `status: "public"` に変更（`id` / `name` / `path` / `data` は既に定義済み。新規なら 1 行追加）
+3. **ページを作る** — `public/ue/index.html` をコピーして `public/godot/index.html` を作り、以下を書き換える:
+   - `<title>` と `<meta>` 群（description / og:* / twitter:* / canonical）
+   - `window.SEL_PAGE`（`engineId` / `meta` / `ui`）
+4. デプロイ
+
+トップの統合辞典・各ページの相互参照・エンジン切り替えリンクは、`ENGINES` の `status` が `public` になった時点で自動的に対応します。
+
+---
+
+## メタ情報 / OGP
+
+ページごとに `title` / `description` / OGP / canonical を個別に設定しています（Twitter で各版を個別共有したときに正しいカードが出るように）。
+
+- 文言のマスターは各ページの `window.SEL_PAGE.meta`。`SEL.applyPageMeta()` が実行時に `<meta>` を上書きします
+- クローラは JS を実行しないため、**同じ値を各 HTML の `<title>` と `<meta>` 群にも静的に書いてあります**。文言を変えるときは両方を更新してください
+- `og:url` は各ページの実 URL（`/` `/ue/` `/unity/`）
+- `og:image` は全ページ `/ogp.png`（**未同梱**。用意して `public/ogp.png` に置くと反映。無くてもページ・カードは壊れません）
+- favicon は全ページ共通（`/favicon.svg` `/favicon.ico` `/apple-touch-icon.png`）
+
+---
+
+## デプロイ（Cloudflare Workers）
+
+`wrangler.jsonc` に静的アセット配信の設定があります。
+
+- `directory: "public"`（`public/` 以下を配信）。テスト用 HTML / `*.bak` などは `public/.assetsignore` で除外
+- `html_handling: "auto-trailing-slash"` … `/ue` → `/ue/`、`/` → `/index.html`
+- `not_found_handling: "none"` … 未知パスは 404
+
+### 本番へのデプロイ（手動）
+
+現在このプロジェクトは **`wrangler` による手動デプロイ**で運用しています。
+GitHub へ push しても Cloudflare には自動反映されません（下記「Git 連携」参照）。
+
+```
+git pull                 # リモートの変更を取り込む
+npx wrangler deploy      # public/ 以下を本番 (typing-terms.bullmus-vg.workers.dev) へ配信
 ```
 
-今後 Unity版・Godot版を追加し、エンジンをまたいだ相互参照（UEの `Level` ⇔ Unityの `Scene` など）を実装する際は、各単語に対応表フィールド（例 `equivalents`）を足してここに登録する想定です。
+初回のみ `npx wrangler login` でブラウザ認証が必要です。
+デプロイ後、変更を必ず GitHub にも push してソースとの差異が出ないようにします。
 
----
+```
+git add -A && git commit -m "..." && git push
+```
 
-## スマホ・タブレット
+### ローカル確認
 
-タッチデバイスではソフトキーボードが画面を占有し、タイピングモードが実質使えません。そのため：
+```
+npx wrangler dev         # http://localhost:8787/
+```
 
-- タッチデバイスを検出したら **4択モードを初期選択** にします
-- タイピングモードも選択可能なまま残します（「PC推奨」の注記を表示）
+`file://` では `fetch` が動かないため、必ず `wrangler dev`（または任意の静的サーバー）を使います。
 
----
+### Git 連携（push だけで反映する運用に戻す場合）
 
-## 名称・説明文・OGP の差し替え
+以前 `*.pages.dev` で使っていた「push で自動デプロイ」は **Cloudflare Pages** の機能でした。
+現在の `*.workers.dev`（Workers 静的アセット）は別物で、Git 連携は既定では無効です。
+push だけで反映される運用に戻すには **Workers Builds** を接続します。
 
-タイトル・略称・サブタイトル・フッター文言・リポジトリURL・サイトURL・OGP説明文・OGP画像パスは `index.html` 内の `APP_INFO` オブジェクト1箇所にまとまっています。Unity 版・Godot 版を作るときはここを差し替えます。
+1. Cloudflare ダッシュボード → **Workers & Pages** → `typing-terms` → **Settings** → **Build**
+2. **Connect** で GitHub の `bullmusvg-debug/typing-terms` を接続
+3. 設定:
+   - Branch: `main`
+   - Build command: （空欄。ビルド不要）
+   - Deploy command: `npx wrangler deploy`
+4. 以降は `main` への push で自動デプロイされる。手動 `wrangler deploy` も引き続き使用可
 
-ただし OGP / Twitter Card はクローラが JS を実行しないため、**同じ値をページ先頭の `<title>` と `<meta>` 群にも書いてあります**。エンジンを切り替えるときは `APP_INFO` とページ先頭の両方を更新してください（ブラウザ表示時は `applyAppInfo()` が `APP_INFO` の値で `<meta>` を上書きします）。
-
-追加済みのメタタグ:
-
-- `description`、`canonical`
-- OGP: `og:type` / `og:site_name` / `og:title` / `og:description` / `og:url` / `og:image`
-- Twitter: `twitter:card`（`summary_large_image`）/ `twitter:title` / `twitter:description` / `twitter:image`
-
----
-
-## favicon / OGP画像
-
-リポジトリ直下に配置。サイトルート（`https://typing-terms.bullmus-vg.workers.dev/`）で配信される前提です。
-
-| ファイル | 用途 |
-| --- | --- |
-| `favicon.svg` | モダンブラウザ用。SEL をモチーフにしたキーボードのアイコン |
-| `favicon.ico` | 旧ブラウザ用、およびブラウザが自動要求する `/favicon.ico`（16/32/48px を内包）。これで従来の `favicon.ico` 404 が解消します |
-| `apple-touch-icon.png` | iOS ホーム画面用（180×180、iOS が自動要求する `/apple-touch-icon.png` も兼ねる） |
-| `ogp.png` | **未同梱**。OGP / Twitter Card 用の画像。用意してリポジトリ直下に置くとカードに反映されます（無くてもページ・カードは壊れません） |
-
-favicon を差し替える場合は `favicon.svg` を編集し、`.ico` / `apple-touch-icon.png` を再生成してください。
-
----
-
-## 起動方法
-
-`index.html` をダブルクリックすれば開きます。単語データやロジックは外部ファイルに依存しないため、`file://` で直接開いても動作します（favicon / OGP画像はサイト配信時のみ読み込まれます）。
+Cloudflare Pages を使う場合は、出力ディレクトリを `public/` にし、リダイレクト挙動を `_redirects` で設定してください。
 
 ---
 
@@ -236,10 +240,6 @@ favicon を差し替える場合は `favicon.svg` を編集し、`.ico` / `apple
 
 MIT License. 詳細は [LICENSE](LICENSE) を参照してください。
 
----
-
 ## 商標について
 
-Unreal Engine は Epic Games, Inc. の、Unity は Unity Technologies の商標または登録商標です。
-
-本ツールは非公式の個人制作物であり、上記各社とは一切関係ありません。また、各社による承認・後援を受けたものでもありません。
+Unreal Engine は Epic Games, Inc. の、Unity は Unity Technologies の、Godot は Godot 関連の、それぞれ商標または登録商標です。本ツールは非公式の個人制作物であり、上記各社・団体とは一切関係なく、承認・後援も受けていません。

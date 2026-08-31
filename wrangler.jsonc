@@ -1,0 +1,24 @@
+{
+  // Cloudflare Workers 静的アセット配信の設定。
+  //   デプロイ:  npx wrangler deploy
+  //   ローカル:  npx wrangler dev   (http://localhost:8787/)
+  //
+  // 配信ルート:
+  //   /            -> /index.html            (SEL トップ)
+  //   /ue/         -> /ue/index.html          (Unreal Engine 編)
+  //   /unity/      -> /unity/index.html       (Unity 編)
+  //   /ue          -> /ue/ へリダイレクト     (html_handling: auto-trailing-slash)
+  //   /data/*.json, /assets/*, /favicon.*, /apple-touch-icon.png -> 静的ファイル
+  //   未知パス     -> 404                     (not_found_handling: none)
+  //
+  // 配信対象は public/ 以下のみ。生成物 (.wrangler/ など) をアセット監視から
+  // 隔離するため、リポジトリ直下ではなく public/ をアセットディレクトリにしている。
+  // 個別の除外ファイルは public/.assetsignore を参照。
+  "name": "typing-terms",
+  "compatibility_date": "2025-06-01",
+  "assets": {
+    "directory": "public",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  }
+}
