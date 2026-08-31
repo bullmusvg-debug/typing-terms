@@ -193,22 +193,35 @@ localStorage は全エンジンで同じキーを使い、**中身のキーを `
 - `html_handling: "auto-trailing-slash"` … `/ue` → `/ue/`、`/` → `/index.html`
 - `not_found_handling: "none"` … 未知パスは 404
 
-### 本番へのデプロイ（手動）
+### 通常運用: `git push` で自動デプロイ
 
-現在このプロジェクトは **`wrangler` による手動デプロイ**で運用しています。
-GitHub へ push しても Cloudflare には自動反映されません（下記「Git 連携」参照）。
-
-```
-git pull                 # リモートの変更を取り込む
-npx wrangler deploy      # public/ 以下を本番 (typing-terms.bullmus-vg.workers.dev) へ配信
-```
-
-初回のみ `npx wrangler login` でブラウザ認証が必要です。
-デプロイ後、変更を必ず GitHub にも push してソースとの差異が出ないようにします。
+このプロジェクトは **Cloudflare Workers Builds** で GitHub リポジトリ
+（`bullmusvg-debug/typing-terms`）と連携しています。
+**`main` ブランチへ push すると Cloudflare 側で自動的にビルド・デプロイ**され、
+`https://typing-terms.bullmus-vg.workers.dev/` に反映されます。
 
 ```
-git add -A && git commit -m "..." && git push
+git add -A
+git commit -m "..."
+git push                 # → main への push で自動デプロイ
 ```
+
+- デプロイ状況・履歴は Cloudflare ダッシュボード → **Workers & Pages** → `typing-terms`
+  → **Deployments** / **Settings → Build** で確認できます
+- `main` 以外のブランチや PR は本番に影響しません（設定によりプレビューが出る場合あり）
+- ビルドは不要（静的アセットのみ）。Deploy command は `npx wrangler deploy`
+
+### 緊急時: 手動デプロイ
+
+Git 連携が使えない・即時反映したい等の場合のみ、ローカルから直接デプロイします。
+
+```
+npx wrangler deploy      # public/ 以下を本番へ即時配信
+```
+
+- 初回のみ `npx wrangler login` でブラウザ認証が必要
+- **手動デプロイした内容は必ず同じものを `git push` してリポジトリと一致させる**こと
+  （次回の自動デプロイで巻き戻らないように）
 
 ### ローカル確認
 
@@ -217,22 +230,6 @@ npx wrangler dev         # http://localhost:8787/
 ```
 
 `file://` では `fetch` が動かないため、必ず `wrangler dev`（または任意の静的サーバー）を使います。
-
-### Git 連携（push だけで反映する運用に戻す場合）
-
-以前 `*.pages.dev` で使っていた「push で自動デプロイ」は **Cloudflare Pages** の機能でした。
-現在の `*.workers.dev`（Workers 静的アセット）は別物で、Git 連携は既定では無効です。
-push だけで反映される運用に戻すには **Workers Builds** を接続します。
-
-1. Cloudflare ダッシュボード → **Workers & Pages** → `typing-terms` → **Settings** → **Build**
-2. **Connect** で GitHub の `bullmusvg-debug/typing-terms` を接続
-3. 設定:
-   - Branch: `main`
-   - Build command: （空欄。ビルド不要）
-   - Deploy command: `npx wrangler deploy`
-4. 以降は `main` への push で自動デプロイされる。手動 `wrangler deploy` も引き続き使用可
-
-Cloudflare Pages を使う場合は、出力ディレクトリを `public/` にし、リダイレクト挙動を `_redirects` で設定してください。
 
 ---
 
