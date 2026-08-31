@@ -194,6 +194,7 @@
 
   <footer id="app-footer">
     <p id="footer-text"></p>
+    <p>アクセス解析に Cloudflare Web Analytics を使用しています(個人を追跡しません)</p>
     <p><a id="footer-repo" target="_blank" rel="noopener noreferrer">GitHub リポジトリ</a></p>
   </footer>`;
 

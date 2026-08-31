@@ -167,6 +167,7 @@ localStorage は全エンジンで同じキーを使い、**中身のキーを `
 3. **ページを作る** — `public/ue/index.html` をコピーして `public/godot/index.html` を作り、以下を書き換える:
    - `<title>` と `<meta>` 群（description / og:* / twitter:* / canonical）
    - `window.SEL_PAGE`（`engineId` / `meta` / `ui`）
+   - `</body>` 直前の **Cloudflare Web Analytics beacon タグはそのまま残す**（消さない）
 4. デプロイ
 
 トップの統合辞典・各ページの相互参照・エンジン切り替えリンクは、`ENGINES` の `status` が `public` になった時点で自動的に対応します。
@@ -180,8 +181,26 @@ localStorage は全エンジンで同じキーを使い、**中身のキーを `
 - 文言のマスターは各ページの `window.SEL_PAGE.meta`。`SEL.applyPageMeta()` が実行時に `<meta>` を上書きします
 - クローラは JS を実行しないため、**同じ値を各 HTML の `<title>` と `<meta>` 群にも静的に書いてあります**。文言を変えるときは両方を更新してください
 - `og:url` は各ページの実 URL（`/` `/ue/` `/unity/`）
-- `og:image` は全ページ `/ogp.png`（**未同梱**。用意して `public/ogp.png` に置くと反映。無くてもページ・カードは壊れません）
+- `og:image` は全ページ `/ogp.png`（`public/ogp.png`）
 - favicon は全ページ共通（`/favicon.svg` `/favicon.ico` `/apple-touch-icon.png`）
+
+---
+
+## アクセス解析（Cloudflare Web Analytics）
+
+各ページで **Cloudflare Web Analytics** を使っています。Cookie を使わず、個人を追跡しません。
+
+- 計測タグは各 HTML（`public/index.html` / `public/ue/index.html` / `public/unity/index.html`）の
+  **`</body>` 直前に静的に記述**しています。`static.cloudflareinsights.com/beacon.min.js` を読み込む
+  `<script type="module" ... data-cf-beacon='{"token": "..."}'>` の 1 行です
+- **動的な script 挿入（`sel-common.js` から `document.createElement` など）は避けています。**
+  読み込みタイミングやモジュール実行の都合で計測が欠落しうるため、確実な静的タグにしています
+- 新しいエンジンページは `public/ue/index.html` のコピーで作るので、beacon タグも一緒にコピーされます
+  （上「新しいエンジンの追加」参照）。**消さないこと**
+- フッターの「アクセス解析に Cloudflare Web Analytics を使用しています(個人を追跡しません)」の一文は
+  `assets/hub.js` と `assets/engine.js` の `#app-footer` テンプレートに固定で入れているため、全ページ共通で自動表示されます
+- トークンは公開情報（ブラウザに露出する）です。ダッシュボードは
+  Cloudflare → **Web Analytics** → `typing-terms.bullmus-vg.workers.dev`
 
 ---
 
