@@ -1319,8 +1319,9 @@
   /* --- skip (typing mode) --- */
   function skipCurrent(){
     if(!state || state.mode !== "typing" || state.phase !== "play") return;
+    // skipped と hadMistake は独立。skipped は「最後まで打ち切らなかった」、
+    // hadMistake は「途中でミスタイプした」を表す。集計で別々に使う。
     state.skipped = true;
-    state.hadMistake = true; // 正答率では不正解として数える
     state.qElapsedMs = performance.now() - state.qStartTime;
     enterReveal("skip");
   }
@@ -1405,28 +1406,40 @@
   function endGame(){
     teardownGameListeners();
     const elapsedSec = (performance.now() - state.startTime) / 1000;
+    const results = state.results;
+    const total = results.length;
 
-    // WPM はスキップした問題を分子(文字数)・分母(時間)の両方から除外する
-    const typed = state.results.filter(r=> !r.skipped);
+    // --- 集計の定義 ---
+    //  answered : 最後まで正解の綴りを打ち切った(= スキップしていない)問題。ミスタイプの有無は問わない
+    //  clean    : 一度もミスせずに打ち切った問題
+    //  skipped  : スキップした問題
+    //  mistake  : ミスタイプしたが最後まで打ち切った問題(結果一覧の「ミスあり」)
+    const answeredCount = results.filter(r=> !r.skipped).length;
+    const cleanCount    = results.filter(r=> !r.skipped && !r.hadMistake).length;
+    const skippedCount  = results.filter(r=> r.skipped).length;
+    const mistakeCount  = results.filter(r=> !r.skipped && r.hadMistake).length;
+    const accuracy = total > 0 ? Math.round((answeredCount / total) * 1000) / 10 : 0;
+
+    // WPM はスキップした問題を分子(打鍵文字数)・分母(経過時間)の両方から除外する
+    const typed = results.filter(r=> !r.skipped);
     const wpmChars = typed.reduce((s,r)=> s + r.chars, 0);
-    const wpmMin = typed.reduce((s,r)=> s + r.elapsedMs, 0) / 60000;
-    const wpm = wpmMin > 0 ? Math.round((wpmChars/5)/wpmMin) : 0;
+    const wpmMs = typed.reduce((s,r)=> s + r.elapsedMs, 0);
+    const wpm = (typed.length > 0 && wpmMs > 0)
+      ? Math.round((wpmChars / 5) / (wpmMs / 60000))
+      : null; // 除外後に対象が無い場合は「-」
 
-    const total = state.results.length;
-    const correctCount = state.results.filter(r=> !r.hadMistake).length; // ノーミス正解(スキップ含まず)
-    const skippedCount = state.results.filter(r=> r.skipped).length;
-    const accuracy = total>0 ? Math.round((correctCount/total)*1000)/10 : 0;
-    const missed = state.results.filter(r=> r.hadMistake);
+    // 結果一覧: ミスした問題 + スキップした問題
+    const review = results.filter(r=> r.skipped || r.hadMistake);
 
     resultAccuracy.textContent = accuracy + "%";
-    resultCorrect.textContent = `${correctCount} / ${total}`;
-    resultWpm.textContent = wpm;
-    resultWpmLabel.textContent = state.mode === "typing" ? "" : "(換算)";
-    resultMissed.textContent = missed.length - skippedCount;
+    resultCorrect.textContent = `${cleanCount} / ${total}`;
+    resultWpm.textContent = (wpm === null) ? "-" : wpm;
+    resultWpmLabel.textContent = (wpm === null) ? "" : (state.mode === "typing" ? "" : "(換算)");
+    resultMissed.textContent = mistakeCount;
     resultSkipped.textContent = skippedCount;
     resultTime.textContent = formatTime(elapsedSec);
 
-    if(missed.length===0){
+    if(review.length===0){
       missedList.innerHTML = "";
       missedList.hidden = true;
       const empty = document.createElement("div");
@@ -1437,7 +1450,7 @@
     }else{
       if(missedList._emptyEl){ missedList._emptyEl.remove(); missedList._emptyEl = null; }
       missedList.hidden = false;
-      missedList.innerHTML = missed.map(r=>{
+      missedList.innerHTML = review.map(r=>{
         const w = ALL_WORDS.find(x=> x.id === r.id) || r;
         const extra = [
           w.where  ? `<div class="mi-x"><span>どこで使う</span>${escapeHtml(w.where)}</div>`  : "",
