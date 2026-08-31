@@ -2,7 +2,7 @@
 
 Unreal Engine の開発でよく使う英単語を、意味と紐づけながらタイピングで覚えるためのブラウザ用学習ツールです。
 
-**▶ [ここで遊べます]([https://ユーザー名.github.io/typing-terms/](https://github.com/bullmusvg-debug/typing-terms))**
+
 
 ---
 
@@ -107,9 +107,7 @@ VS Code の Live Server 拡張でも同じことができます。
 
 ---
 
-## ライセンス
 
-MIT License. 詳細は [LICENSE](LICENSE) を参照してください。
 
 ---
 
