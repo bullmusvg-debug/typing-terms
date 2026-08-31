@@ -208,16 +208,19 @@
     padding:34px 10px 20px;
   }
   .meaning{
-    font-size:1.7rem;
+    font-size:clamp(1.15rem, 4.5vw, 1.7rem);
     font-weight:700;
     margin-bottom:8px;
-    word-break:keep-all;
+    overflow-wrap:break-word;
+    word-break:break-word;
   }
   .note-hint{
     font-size:0.82rem;
     color:var(--sub);
     min-height:1.2em;
     margin-bottom:26px;
+    overflow-wrap:break-word;
+    word-break:break-word;
   }
 
   .letters{
@@ -226,6 +229,7 @@
     flex-wrap:wrap;
     gap:4px;
     min-height:2.4em;
+    max-width:100%;
   }
   .letter{
     display:inline-flex;
@@ -235,7 +239,7 @@
     height:1.9rem;
     border-bottom:3px solid var(--border);
     font-family:"Consolas","SFMono-Regular",monospace;
-    font-size:1.5rem;
+    font-size:clamp(1.05rem, 4.5vw, 1.5rem);
     font-weight:600;
     color:var(--good);
     padding:0 2px;
@@ -259,10 +263,13 @@
 
   .word-en{
     font-family:"Consolas","SFMono-Regular",monospace;
-    font-size:2rem;
+    font-size:clamp(1.3rem, 6vw, 2rem);
     font-weight:700;
     margin-bottom:30px;
     letter-spacing:0.02em;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+    max-width:100%;
   }
   .choices{
     display:grid;
@@ -376,13 +383,6 @@
     gap:12px;
   }
   .result-footer .btn{flex:1;}
-
-  #load-error{
-    text-align:center;
-    color:var(--warn);
-    font-size:0.8rem;
-    margin-top:14px;
-  }
 </style>
 </head>
 <body>
@@ -426,7 +426,6 @@
     </div>
 
     <div class="pool-info" id="pool-info">読み込み中...</div>
-    <div id="load-error" hidden></div>
 
     <div class="setup-footer">
       <button class="btn btn-ghost btn-small" id="reset-weak-btn" type="button">苦手リストをリセット</button>
@@ -448,7 +447,7 @@
       <div class="meaning" id="q-meaning"></div>
       <div class="note-hint" id="q-note"></div>
       <div class="letters" id="letters"></div>
-      <div class="hint-line">英単語をキーボードでそのまま入力してください(大文字/小文字も正確に)</div>
+      <div class="hint-line">英単語をキーボードで入力してください(大文字・小文字は区別しません)</div>
     </div>
 
     <!-- choice mode -->
@@ -496,11 +495,9 @@
   "use strict";
 
   /* ---------------------------------------------------------
-   * 内蔵フォールバックデータ
-   * words.json の読み込みに失敗した場合(file://での実行時の
-   * CORS制限など)に備えて、同内容をここにも埋め込んでおく。
+   * 単語データ(このファイルが唯一の正データ)
    * --------------------------------------------------------- */
-  const FALLBACK_WORDS = [
+  const WORDS_DATA = [
     { "id": 1, "en": "Actor", "ja": "アクター", "note": "レベルに配置できるすべてのオブジェクトの基底クラス。", "category": "UE固有", "level": 1 },
     { "id": 2, "en": "Pawn", "ja": "ポーン", "note": "コントローラーに憑依(Possess)されて操作されるアクター。", "category": "UE固有", "level": 1 },
     { "id": 3, "en": "Character", "ja": "キャラクター", "note": "歩行・ジャンプ用のMovementComponentを最初から持つPawn。", "category": "UE固有", "level": 1 },
@@ -679,7 +676,6 @@
   const levelContainer = document.getElementById("level-container");
   const priorityCheckbox = document.getElementById("priority-checkbox");
   const poolInfo = document.getElementById("pool-info");
-  const loadError = document.getElementById("load-error");
   const startBtn = document.getElementById("start-btn");
   const resetWeakBtn = document.getElementById("reset-weak-btn");
 
@@ -735,24 +731,6 @@
     const m = Math.floor(sec/60);
     const s = Math.floor(sec%60);
     return m + ":" + String(s).padStart(2,"0");
-  }
-
-  /* ---------- data loading ---------- */
-  async function loadWords(){
-    try{
-      const res = await fetch("words.json", {cache:"no-store"});
-      if(!res.ok) throw new Error("HTTP " + res.status);
-      const data = await res.json();
-      if(!data || !Array.isArray(data.words) || data.words.length===0){
-        throw new Error("unexpected format");
-      }
-      return data.words;
-    }catch(e){
-      console.warn("words.json の読み込みに失敗したため、内蔵データを使用します。", e);
-      loadError.hidden = false;
-      loadError.textContent = "words.json を読み込めなかったため、内蔵データで起動しました(file:// で開いている場合はローカルサーバー経由での起動を推奨します)。";
-      return FALLBACK_WORDS;
-    }
   }
 
   /* ---------- setup screen ---------- */
@@ -923,7 +901,7 @@
     const expected = q.en[state.typedLen];
     const spans = lettersEl.children;
 
-    if(e.key === expected){
+    if(e.key.toLowerCase() === expected.toLowerCase()){
       const span = spans[state.typedLen];
       span.textContent = expected === " " ? " " : expected;
       span.classList.remove("active");
@@ -1040,8 +1018,8 @@
   retryBtn.addEventListener("click", startGame);
 
   /* ---------- init ---------- */
-  (async function init(){
-    ALL_WORDS = await loadWords();
+  (function init(){
+    ALL_WORDS = WORDS_DATA;
     buildFilterUI();
     updatePoolPreview();
   })();
