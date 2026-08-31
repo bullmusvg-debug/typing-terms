@@ -1409,16 +1409,22 @@
     const results = state.results;
     const total = results.length;
 
-    // --- 集計の定義 ---
-    //  answered : 最後まで正解の綴りを打ち切った(= スキップしていない)問題。ミスタイプの有無は問わない
-    //  clean    : 一度もミスせずに打ち切った問題
-    //  skipped  : スキップした問題
-    //  mistake  : ミスタイプしたが最後まで打ち切った問題(結果一覧の「ミスあり」)
-    const answeredCount = results.filter(r=> !r.skipped).length;
-    const cleanCount    = results.filter(r=> !r.skipped && !r.hadMistake).length;
-    const skippedCount  = results.filter(r=> r.skipped).length;
-    const mistakeCount  = results.filter(r=> !r.skipped && r.hadMistake).length;
-    const accuracy = total > 0 ? Math.round((answeredCount / total) * 1000) / 10 : 0;
+    // --- 各問題の分類(タイピングモードは正しいキーを打つまで進まないので、
+    //     「スキップした」か「最後まで打ち切った」かのどちらか。後者は必ず最終的に正解している) ---
+    //  cleanResults   : 一度もミスせずに打ち切った問題
+    //  mistakeResults : ミスタイプはしたが最後まで打ち切った問題(= 最終的に正解。結果一覧の「ミスあり」)
+    //  skippedResults : スキップした問題(= 不正解)
+    const skippedResults = results.filter(r=> r.skipped);
+    const mistakeResults = results.filter(r=> !r.skipped && r.hadMistake);
+    const cleanResults   = results.filter(r=> !r.skipped && !r.hadMistake);
+
+    const skippedCount = skippedResults.length;
+    const mistakeCount = mistakeResults.length;
+    const cleanCount   = cleanResults.length;
+
+    // 正答率の分子 = 最終的に正解した問題数 = ノーミス正解 + ミスあり正解(スキップは含めない)
+    const correctCount = cleanCount + mistakeCount;
+    const accuracy = total > 0 ? Math.round((correctCount / total) * 1000) / 10 : 0;
 
     // WPM はスキップした問題を分子(打鍵文字数)・分母(経過時間)の両方から除外する
     const typed = results.filter(r=> !r.skipped);
