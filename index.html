@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UE用語タイピング道場</title>
+<style>
+  :root{
+    --bg:#12141a;
+    --panel:#1a1d26;
+    --panel2:#20242f;
+    --border:#2c3040;
+    --text:#e8eaf0;
+    --sub:#8a90a4;
+    --accent:#4ea1ff;
+    --good:#5ee6a0;
+    --bad:#ff5c6a;
+    --warn:#ffcb6b;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:radial-gradient(circle at top, #1b1f2b 0%, #0e1015 70%);
+    color:var(--text);
+    font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:24px 16px 60px;
+    min-height:100%;
+  }
+  #app{
+    width:100%;
+    max-width:760px;
+  }
+  header{
+    text-align:center;
+    margin-bottom:20px;
+  }
+  header h1{
+    font-size:1.5rem;
+    margin:0 0 4px;
+    letter-spacing:0.02em;
+  }
+  header p{
+    margin:0;
+    color:var(--sub);
+    font-size:0.85rem;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.35);
+  }
+  section[hidden]{display:none !important;}
+
+  /* --- setup screen --- */
+  .field{margin-bottom:22px;}
+  .field > label.field-title{
+    display:block;
+    font-size:0.8rem;
+    color:var(--sub);
+    margin-bottom:8px;
+    font-weight:600;
+    letter-spacing:0.03em;
+  }
+  .mode-toggle{
+    display:flex;
+    gap:10px;
+  }
+  .mode-toggle label{
+    flex:1;
+    text-align:center;
+    padding:12px 8px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    cursor:pointer;
+    background:var(--panel2);
+    transition:0.15s;
+  }
+  .mode-toggle input{display:none;}
+  .mode-toggle label.active,
+  .mode-toggle input:checked + span{color:var(--accent);}
+  .mode-toggle label:has(input:checked){
+    border-color:var(--accent);
+    background:rgba(78,161,255,0.12);
+    color:var(--accent);
+  }
+  .mode-toggle .desc{display:block;font-size:0.72rem;color:var(--sub);margin-top:2px;}
+
+  .chip-group{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 12px;
+    border:1px solid var(--border);
+    border-radius:999px;
+    background:var(--panel2);
+    cursor:pointer;
+    font-size:0.85rem;
+    user-select:none;
+    transition:0.15s;
+  }
+  .chip:has(input:checked){
+    border-color:var(--accent);
+    background:rgba(78,161,255,0.14);
+  }
+  .chip input{accent-color:var(--accent);}
+
+  .toggle-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:0.88rem;
+    color:var(--text);
+  }
+  .toggle-row input{accent-color:var(--accent);width:16px;height:16px;}
+
+  .pool-info{
+    margin-top:14px;
+    font-size:0.82rem;
+    color:var(--sub);
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 14px;
+  }
+  .pool-info b{color:var(--text);}
+  .pool-info .warn{color:var(--warn);}
+
+  .btn{
+    display:inline-block;
+    border:none;
+    border-radius:10px;
+    padding:12px 20px;
+    font-size:0.95rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.15s;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,#4ea1ff,#7c6cff);
+    color:#0b0d12;
+    width:100%;
+    padding:14px;
+    font-size:1.05rem;
+  }
+  .btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+  .btn-primary:not(:disabled):hover{filter:brightness(1.08);}
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--sub);
+  }
+  .btn-ghost:hover{color:var(--text);border-color:var(--sub);}
+  .btn-small{padding:6px 12px;font-size:0.78rem;}
+
+  .setup-footer{
+    margin-top:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+  }
+
+  /* --- game screen --- */
+  .game-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+    font-size:0.85rem;
+    color:var(--sub);
+  }
+  .progress-bar{
+    flex:1;
+    height:6px;
+    background:var(--panel2);
+    border-radius:99px;
+    margin:0 14px;
+    overflow:hidden;
+  }
+  .progress-bar > div{
+    height:100%;
+    background:linear-gradient(90deg,#4ea1ff,#7c6cff);
+    width:0%;
+    transition:width 0.25s;
+  }
+  .tag-row{
+    display:flex;
+    justify-content:center;
+    margin-bottom:10px;
+  }
+  .tag{
+    font-size:0.72rem;
+    color:var(--sub);
+    border:1px solid var(--border);
+    padding:3px 10px;
+    border-radius:999px;
+    background:var(--panel2);
+  }
+
+  .q-area{
+    text-align:center;
+    padding:34px 10px 20px;
+  }
+  .meaning{
+    font-size:1.7rem;
+    font-weight:700;
+    margin-bottom:8px;
+    word-break:keep-all;
+  }
+  .note-hint{
+    font-size:0.82rem;
+    color:var(--sub);
+    min-height:1.2em;
+    margin-bottom:26px;
+  }
+
+  .letters{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:4px;
+    min-height:2.4em;
+  }
+  .letter{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:1.05em;
+    height:1.9rem;
+    border-bottom:3px solid var(--border);
+    font-family:"Consolas","SFMono-Regular",monospace;
+    font-size:1.5rem;
+    font-weight:600;
+    color:var(--good);
+    padding:0 2px;
+    transition:border-color 0.15s;
+  }
+  .letter.space{border-bottom:none;min-width:0.7em;}
+  .letter.active{border-color:var(--accent);}
+  .letter.error{
+    border-color:var(--bad);
+    background:rgba(255,92,106,0.18);
+    border-radius:4px;
+    animation:shake 0.22s;
+  }
+  @keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-4px);}
+    50%{transform:translateX(4px);}
+    75%{transform:translateX(-3px);}
+    100%{transform:translateX(0);}
+  }
+
+  .word-en{
+    font-family:"Consolas","SFMono-Regular",monospace;
+    font-size:2rem;
+    font-weight:700;
+    margin-bottom:30px;
+    letter-spacing:0.02em;
+  }
+  .choices{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .choice-btn{
+    padding:16px 12px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--panel2);
+    color:var(--text);
+    font-size:1rem;
+    cursor:pointer;
+    transition:0.15s;
+  }
+  .choice-btn:hover:not(:disabled){border-color:var(--accent);}
+  .choice-btn.correct{
+    border-color:var(--good);
+    background:rgba(94,230,160,0.16);
+    color:var(--good);
+  }
+  .choice-btn.error{
+    border-color:var(--bad);
+    background:rgba(255,92,106,0.16);
+    color:var(--bad);
+    animation:shake 0.22s;
+  }
+  .choice-btn:disabled{cursor:not-allowed;}
+
+  .hint-line{
+    text-align:center;
+    color:var(--sub);
+    font-size:0.78rem;
+    margin-top:24px;
+  }
+
+  .game-footer{
+    margin-top:20px;
+    text-align:center;
+  }
+
+  /* --- result screen --- */
+  .result-stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-bottom:22px;
+  }
+  .stat-box{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 10px;
+    text-align:center;
+  }
+  .stat-box .val{
+    font-size:2rem;
+    font-weight:700;
+    color:var(--accent);
+  }
+  .stat-box .label{
+    font-size:0.78rem;
+    color:var(--sub);
+    margin-top:4px;
+  }
+  .sub-stats{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    font-size:0.85rem;
+    color:var(--sub);
+    margin-bottom:22px;
+  }
+  .sub-stats b{color:var(--text);}
+
+  .missed-section h3{
+    font-size:0.85rem;
+    color:var(--sub);
+    margin:0 0 10px;
+  }
+  .missed-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    max-height:240px;
+    overflow-y:auto;
+    margin-bottom:22px;
+  }
+  .missed-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 14px;
+    font-size:0.88rem;
+  }
+  .missed-item .en{font-family:"Consolas",monospace;font-weight:700;color:var(--bad);}
+  .missed-item .ja{color:var(--sub);}
+  .missed-empty{
+    text-align:center;
+    color:var(--sub);
+    font-size:0.85rem;
+    padding:16px 0 22px;
+  }
+
+  .result-footer{
+    display:flex;
+    gap:12px;
+  }
+  .result-footer .btn{flex:1;}
+
+  #load-error{
+    text-align:center;
+    color:var(--warn);
+    font-size:0.8rem;
+    margin-top:14px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>⌨ UE用語タイピング道場</h1>
+    <p>Unreal Engine開発でよく使う英単語を、意味を見て身体で覚える</p>
+  </header>
+
+  <!-- ===== setup screen ===== -->
+  <section id="screen-setup" class="card">
+    <div class="field">
+      <label class="field-title">モード</label>
+      <div class="mode-toggle">
+        <label id="mode-typing-label">
+          <input type="radio" name="mode" value="typing" checked>
+          <span>タイピングモード<span class="desc">意味を見て英単語を打つ</span></span>
+        </label>
+        <label id="mode-choice-label">
+          <input type="radio" name="mode" value="choice">
+          <span>4択モード<span class="desc">英単語を見て意味を選ぶ</span></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-title">カテゴリ</label>
+      <div class="chip-group" id="category-container"></div>
+    </div>
+
+    <div class="field">
+      <label class="field-title">難易度</label>
+      <div class="chip-group" id="level-container"></div>
+    </div>
+
+    <div class="field">
+      <label class="toggle-row">
+        <input type="checkbox" id="priority-checkbox" checked>
+        苦手な単語を優先的に出題する
+      </label>
+    </div>
+
+    <div class="pool-info" id="pool-info">読み込み中...</div>
+    <div id="load-error" hidden></div>
+
+    <div class="setup-footer">
+      <button class="btn btn-ghost btn-small" id="reset-weak-btn" type="button">苦手リストをリセット</button>
+      <button class="btn btn-primary" id="start-btn" type="button" disabled style="width:auto;flex:1;">はじめる</button>
+    </div>
+  </section>
+
+  <!-- ===== game screen ===== -->
+  <section id="screen-game" class="card" hidden>
+    <div class="game-top">
+      <button class="btn btn-ghost btn-small" id="quit-btn" type="button">✕ 中断</button>
+      <div class="progress-bar"><div id="progress-fill"></div></div>
+      <span id="progress-text">1 / 10</span>
+    </div>
+    <div class="tag-row"><span class="tag" id="q-tag"></span></div>
+
+    <!-- typing mode -->
+    <div id="typing-area" class="q-area" hidden>
+      <div class="meaning" id="q-meaning"></div>
+      <div class="note-hint" id="q-note"></div>
+      <div class="letters" id="letters"></div>
+      <div class="hint-line">英単語をキーボードでそのまま入力してください(大文字/小文字も正確に)</div>
+    </div>
+
+    <!-- choice mode -->
+    <div id="choice-area" class="q-area" hidden>
+      <div class="word-en" id="q-word-en"></div>
+      <div class="choices" id="choices"></div>
+      <div class="hint-line">正しい意味を選んでください</div>
+    </div>
+  </section>
+
+  <!-- ===== result screen ===== -->
+  <section id="screen-result" class="card" hidden>
+    <div class="result-stats">
+      <div class="stat-box">
+        <div class="val" id="result-wpm">0</div>
+        <div class="label" id="result-wpm-label">WPM</div>
+      </div>
+      <div class="stat-box">
+        <div class="val" id="result-accuracy">0%</div>
+        <div class="label">正答率</div>
+      </div>
+    </div>
+    <div class="sub-stats">
+      <div>正解 <b id="result-correct">0</b>問</div>
+      <div>ミスあり <b id="result-missed">0</b>問</div>
+      <div>所要時間 <b id="result-time">0:00</b></div>
+    </div>
+
+    <div class="missed-section">
+      <h3>今回間違えた単語</h3>
+      <div class="missed-list" id="missed-list"></div>
+    </div>
+
+    <div class="pool-info" id="weak-total-info"></div>
+
+    <div class="result-footer" style="margin-top:20px;">
+      <button class="btn btn-ghost" id="back-btn" type="button">設定に戻る</button>
+      <button class="btn btn-primary" id="retry-btn" type="button">もう一度</button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------------------------------------------------
+   * 内蔵フォールバックデータ
+   * words.json の読み込みに失敗した場合(file://での実行時の
+   * CORS制限など)に備えて、同内容をここにも埋め込んでおく。
+   * --------------------------------------------------------- */
+  const FALLBACK_WORDS = [
+    { "id": 1, "en": "Actor", "ja": "アクター", "note": "レベルに配置できるすべてのオブジェクトの基底クラス。", "category": "UE固有", "level": 1 },
+    { "id": 2, "en": "Pawn", "ja": "ポーン", "note": "コントローラーに憑依(Possess)されて操作されるアクター。", "category": "UE固有", "level": 1 },
+    { "id": 3, "en": "Character", "ja": "キャラクター", "note": "歩行・ジャンプ用のMovementComponentを最初から持つPawn。", "category": "UE固有", "level": 1 },
+    { "id": 4, "en": "Controller", "ja": "コントローラー", "note": "Pawnを操作する頭脳役。プレイヤー用とAI用がある。", "category": "UE固有", "level": 1 },
+    { "id": 5, "en": "Possess", "ja": "憑依する / 操作権を持つ", "note": "ControllerがPawnを支配下に置くこと。", "category": "UE固有", "level": 2 },
+    { "id": 6, "en": "Blueprint", "ja": "ブループリント", "note": "ノードをつないで処理を書くUEのビジュアルスクリプト。", "category": "UE固有", "level": 1 },
+    { "id": 7, "en": "Component", "ja": "コンポーネント / 部品", "note": "アクターに機能を追加する部品。メッシュや当たり判定など。", "category": "共通", "level": 1 },
+    { "id": 8, "en": "Level", "ja": "レベル / マップ", "note": "アクターを配置する空間そのもの。Unityでいうシーン。", "category": "UE固有", "level": 1 },
+    { "id": 9, "en": "World", "ja": "ワールド", "note": "実行中のレベルを含むゲーム空間全体を指す概念。", "category": "UE固有", "level": 2 },
+    { "id": 10, "en": "Spawn", "ja": "生成する", "note": "実行中に新しいアクターを世界に出現させること。", "category": "共通", "level": 1 },
+    { "id": 11, "en": "Destroy", "ja": "破棄する", "note": "アクターを世界から取り除くこと。", "category": "共通", "level": 1 },
+    { "id": 12, "en": "Tick", "ja": "毎フレームの更新処理", "note": "毎フレーム呼ばれるイベント。多用すると重くなる。", "category": "UE固有", "level": 1 },
+    { "id": 13, "en": "Delta Time", "ja": "前フレームからの経過時間", "note": "フレームレートに依存しない動きを作るために掛ける値。", "category": "共通", "level": 1 },
+    { "id": 14, "en": "Begin Play", "ja": "開始時に呼ばれるイベント", "note": "アクターがゲーム内で動き始めた瞬間に一度だけ実行。", "category": "UE固有", "level": 1 },
+    { "id": 15, "en": "End Play", "ja": "終了時に呼ばれるイベント", "note": "アクターが破棄されるかレベルが終わるときに実行。", "category": "UE固有", "level": 2 },
+    { "id": 16, "en": "Construction Script", "ja": "コンストラクションスクリプト", "note": "エディタ上で配置・編集した瞬間に走る事前処理。", "category": "UE固有", "level": 2 },
+    { "id": 17, "en": "Event Graph", "ja": "イベントグラフ", "note": "BPで実行時のロジックを組む主要なグラフ。", "category": "UE固有", "level": 1 },
+    { "id": 18, "en": "Cast", "ja": "キャスト / 型変換", "note": "参照を目的のクラスとして扱えるか試して変換する。", "category": "共通", "level": 1 },
+    { "id": 19, "en": "Interface", "ja": "インターフェース", "note": "クラスの種類を問わず共通の呼び出し口を用意する仕組み。", "category": "共通", "level": 2 },
+    { "id": 20, "en": "Delegate", "ja": "デリゲート", "note": "関数を変数のように保持して後から呼ぶ仕組み。", "category": "共通", "level": 2 },
+    { "id": 21, "en": "Event Dispatcher", "ja": "イベントディスパッチャー", "note": "BP側でのデリゲート。通知を投げて別BPに拾わせる。", "category": "UE固有", "level": 2 },
+    { "id": 22, "en": "Bind", "ja": "紐づける / 束縛する", "note": "イベントやデリゲートに処理を登録すること。", "category": "共通", "level": 2 },
+    { "id": 23, "en": "Inheritance", "ja": "継承", "note": "親クラスの機能を引き継いで子クラスを作ること。", "category": "共通", "level": 1 },
+    { "id": 24, "en": "Override", "ja": "上書きする / オーバーライド", "note": "親クラスの関数を子クラスで作り直すこと。", "category": "共通", "level": 1 },
+    { "id": 25, "en": "Instance", "ja": "インスタンス / 実体", "note": "クラスという設計図から作られた個々の実物。", "category": "共通", "level": 1 },
+    { "id": 26, "en": "Reference", "ja": "参照", "note": "オブジェクトそのものではなく在り処を指す値。", "category": "共通", "level": 1 },
+    { "id": 27, "en": "Hard Reference", "ja": "ハード参照", "note": "読み込むと参照先も芋づる式にメモリに載る参照。", "category": "UE固有", "level": 3 },
+    { "id": 28, "en": "Soft Reference", "ja": "ソフト参照", "note": "パスだけ保持し、必要になってから読み込む参照。", "category": "UE固有", "level": 3 },
+    { "id": 29, "en": "Garbage Collection", "ja": "ガベージコレクション", "note": "参照されなくなったオブジェクトを自動で解放する仕組み。", "category": "共通", "level": 3 },
+    { "id": 30, "en": "Transform", "ja": "トランスフォーム", "note": "位置・回転・拡縮をまとめた変換情報。", "category": "共通", "level": 1 },
+    { "id": 31, "en": "Location", "ja": "位置 / 座標", "note": "UEではPositionではなくLocationと呼ぶ。", "category": "UE固有", "level": 1 },
+    { "id": 32, "en": "Rotation", "ja": "回転", "note": "オブジェクトの向き。", "category": "共通", "level": 1 },
+    { "id": 33, "en": "Scale", "ja": "拡大縮小 / スケール", "note": "オブジェクトの大きさの倍率。", "category": "共通", "level": 1 },
+    { "id": 34, "en": "Vector", "ja": "ベクトル", "note": "X/Y/Zの3成分を持つ値。位置や方向に使う。", "category": "共通", "level": 1 },
+    { "id": 35, "en": "Rotator", "ja": "ローテーター", "note": "Pitch/Yaw/Rollで回転を表すUE独自の型。", "category": "UE固有", "level": 2 },
+    { "id": 36, "en": "Quaternion", "ja": "クォータニオン / 四元数", "note": "ジンバルロックを避けられる回転表現。", "category": "共通", "level": 3 },
+    { "id": 37, "en": "Pitch", "ja": "ピッチ / 上下の首振り", "note": "左右軸まわりの回転。", "category": "共通", "level": 2 },
+    { "id": 38, "en": "Yaw", "ja": "ヨー / 左右の首振り", "note": "上下軸まわりの回転。", "category": "共通", "level": 2 },
+    { "id": 39, "en": "Roll", "ja": "ロール / 傾き", "note": "前後軸まわりの回転。", "category": "共通", "level": 2 },
+    { "id": 40, "en": "Pivot", "ja": "ピボット / 回転の基準点", "note": "モデルが回転・拡縮するときの中心。", "category": "共通", "level": 2 },
+    { "id": 41, "en": "Snap", "ja": "スナップ / 吸着", "note": "一定間隔でキリよく配置される機能。", "category": "共通", "level": 2 },
+    { "id": 42, "en": "Viewport", "ja": "ビューポート", "note": "エディタでシーンを映している表示領域。", "category": "共通", "level": 1 },
+    { "id": 43, "en": "Outliner", "ja": "アウトライナー", "note": "レベル内のアクター一覧を階層表示するパネル。", "category": "UE固有", "level": 1 },
+    { "id": 44, "en": "Details Panel", "ja": "詳細パネル", "note": "選択中のアクターやコンポーネントの設定を編集する場所。", "category": "UE固有", "level": 1 },
+    { "id": 45, "en": "Content Browser", "ja": "コンテンツブラウザ", "note": "プロジェクト内のアセットを閲覧・管理するパネル。", "category": "UE固有", "level": 1 },
+    { "id": 46, "en": "Asset", "ja": "アセット / 素材", "note": "モデルやテクスチャなどプロジェクトが持つデータ資産。", "category": "共通", "level": 1 },
+    { "id": 47, "en": "Migrate", "ja": "移行する", "note": "依存アセットごと別プロジェクトにコピーする機能。", "category": "UE固有", "level": 2 },
+    { "id": 48, "en": "Redirector", "ja": "リダイレクタ", "note": "アセットを移動・改名した跡に残る転送用の印。", "category": "UE固有", "level": 3 },
+    { "id": 49, "en": "Plugin", "ja": "プラグイン / 拡張機能", "note": "後から機能を追加できる着脱式のモジュール。", "category": "共通", "level": 1 },
+    { "id": 50, "en": "Module", "ja": "モジュール", "note": "C++コードをビルド単位で区切ったまとまり。", "category": "共通", "level": 3 },
+    { "id": 51, "en": "Subsystem", "ja": "サブシステム", "note": "寿命が管理された共有機能の置き場。シングルトン的に使う。", "category": "UE固有", "level": 3 },
+    { "id": 52, "en": "Static Mesh", "ja": "スタティックメッシュ", "note": "変形しない固定の3Dモデル。壁や小物など。", "category": "UE固有", "level": 1 },
+    { "id": 53, "en": "Skeletal Mesh", "ja": "スケルタルメッシュ", "note": "骨組みを持ち、アニメーションで変形する3Dモデル。", "category": "UE固有", "level": 1 },
+    { "id": 54, "en": "Skeleton", "ja": "スケルトン / 骨格", "note": "メッシュを動かすためのボン構造。", "category": "共通", "level": 2 },
+    { "id": 55, "en": "Socket", "ja": "ソケット / 取り付け位置", "note": "武器などを装着するためにボーン上に定義した点。", "category": "共通", "level": 2 },
+    { "id": 56, "en": "Attach", "ja": "取り付ける / 追従させる", "note": "あるコンポーネントを別のものにくっつけること。", "category": "共通", "level": 1 },
+    { "id": 57, "en": "Material", "ja": "マテリアル / 材質", "note": "表面の見た目を決める設定のかたまり。", "category": "共通", "level": 1 },
+    { "id": 58, "en": "Material Instance", "ja": "マテリアルインスタンス", "note": "元マテリアルのパラメータだけ差し替えた派生。", "category": "UE固有", "level": 2 },
+    { "id": 59, "en": "Texture", "ja": "テクスチャ / 貼り付ける画像", "note": "モデル表面に貼る画像データ。", "category": "共通", "level": 1 },
+    { "id": 60, "en": "Normal Map", "ja": "ノーマルマップ / 法線マップ", "note": "凹凸があるように光の当たり方を偽装する画像。", "category": "共通", "level": 2 },
+    { "id": 61, "en": "Roughness", "ja": "粗さ / ざらつき", "note": "0でツルツル、1でザラザラ。反射のボケ具合を決める。", "category": "共通", "level": 2 },
+    { "id": 62, "en": "Metallic", "ja": "金属度", "note": "その表面を金属として扱うかどうかの値。", "category": "共通", "level": 2 },
+    { "id": 63, "en": "Emissive", "ja": "自己発光", "note": "自ら光っているように見せる成分。", "category": "共通", "level": 2 },
+    { "id": 64, "en": "Opacity", "ja": "不透明度", "note": "どれだけ透けるかを表す値。", "category": "共通", "level": 2 },
+    { "id": 65, "en": "Shader", "ja": "シェーダー", "note": "GPU上で描画方法を決めるプログラム。", "category": "共通", "level": 2 },
+    { "id": 66, "en": "UV", "ja": "UV / テクスチャ座標", "note": "3Dモデルのどこに画像のどこを貼るかの対応情報。", "category": "共通", "level": 2 },
+    { "id": 67, "en": "LOD", "ja": "詳細度の段階切り替え", "note": "Level of Detailの略。遠いほど粗いモデルに差し替える。", "category": "共通", "level": 2 },
+    { "id": 68, "en": "Culling", "ja": "カリング / 描画の間引き", "note": "見えていないものを描かずに負荷を下げる処理。", "category": "共通", "level": 2 },
+    { "id": 69, "en": "Occlusion", "ja": "オクルージョン / 遮蔽", "note": "手前の物に隠れている状態。", "category": "共通", "level": 3 },
+    { "id": 70, "en": "Draw Call", "ja": "ドローコール / 描画命令", "note": "CPUがGPUに出す描画依頼。多いほど重い。", "category": "共通", "level": 3 },
+    { "id": 71, "en": "Nanite", "ja": "ナナイト", "note": "超高密度メッシュを自動で最適化するUE5の仮想ジオメトリ。", "category": "UE固有", "level": 2 },
+    { "id": 72, "en": "Lumen", "ja": "ルーメン", "note": "UE5のリアルタイムグローバルイルミネーション。", "category": "UE固有", "level": 2 },
+    { "id": 73, "en": "Niagara", "ja": "ナイアガラ", "note": "UEのパーティクル/VFXシステム。", "category": "UE固有", "level": 2 },
+    { "id": 74, "en": "Sequencer", "ja": "シーケンサー", "note": "カットシーンやカメラワークを作る時間軸ツール。", "category": "UE固有", "level": 2 },
+    { "id": 75, "en": "Post Process", "ja": "ポストプロセス / 後処理", "note": "描画後の画面全体にかける演出効果。", "category": "共通", "level": 2 },
+    { "id": 76, "en": "Exposure", "ja": "露出", "note": "画面全体の明るさの自動調整。", "category": "共通", "level": 2 },
+    { "id": 77, "en": "Depth of Field", "ja": "被写界深度", "note": "ピントの合う距離以外をぼかす表現。", "category": "共通", "level": 3 },
+    { "id": 78, "en": "Directional Light", "ja": "ディレクショナルライト / 平行光源", "note": "太陽のように一方向から均一に差す光。", "category": "共通", "level": 1 },
+    { "id": 79, "en": "Point Light", "ja": "ポイントライト / 点光源", "note": "一点から全方向に広がる光。電球のイメージ。", "category": "共通", "level": 1 },
+    { "id": 80, "en": "Spot Light", "ja": "スポットライト", "note": "円錐状に絞られた光。", "category": "共通", "level": 1 },
+    { "id": 81, "en": "Sky Light", "ja": "スカイライト / 環境光", "note": "空や周囲から回り込む光を再現するライト。", "category": "UE固有", "level": 2 },
+    { "id": 82, "en": "Decal", "ja": "デカール / 貼り付け跡", "note": "地面や壁に投影する汚れ・弾痕などの模様。", "category": "共通", "level": 2 },
+    { "id": 83, "en": "Landscape", "ja": "ランドスケープ / 地形", "note": "起伏のある広大な地面を作る機能。", "category": "UE固有", "level": 2 },
+    { "id": 84, "en": "Foliage", "ja": "フォリッジ / 植生", "note": "草木などを大量配置するための仕組み。", "category": "UE固有", "level": 2 },
+    { "id": 85, "en": "Spline", "ja": "スプライン / 曲線", "note": "制御点で作る滑らかな線。道やレールに使う。", "category": "共通", "level": 2 },
+    { "id": 86, "en": "Volume", "ja": "ボリューム / 効果範囲", "note": "空間を箱状に区切り、その中にだけ効果を及ぼすもの。", "category": "UE固有", "level": 2 },
+    { "id": 87, "en": "Trigger", "ja": "トリガー / きっかけ", "note": "触れると処理が起動する判定領域。", "category": "共通", "level": 1 },
+    { "id": 88, "en": "Collision", "ja": "コリジョン / 当たり判定", "note": "物体同士がぶつかるかを決める形状と設定。", "category": "共通", "level": 1 },
+    { "id": 89, "en": "Overlap", "ja": "重なり / すり抜けつつ検知", "note": "ぶつからずに通過しつつ、重なりだけ検知する状態。", "category": "UE固有", "level": 1 },
+    { "id": 90, "en": "Block", "ja": "ブロック / 押し返す", "note": "物理的にぶつかって通過を止める衝突応答。", "category": "UE固有", "level": 1 },
+    { "id": 91, "en": "Hit", "ja": "ヒット / 衝突", "note": "実際にぶつかった瞬間の情報。", "category": "共通", "level": 1 },
+    { "id": 92, "en": "Trace", "ja": "トレース / 判定線を飛ばす", "note": "指定した経路上に何があるかを調べる処理。", "category": "UE固有", "level": 1 },
+    { "id": 93, "en": "Line Trace", "ja": "ラインレイキャスト / 線判定", "note": "細い線を飛ばして最初に当たったものを取得する。", "category": "UE固有", "level": 1 },
+    { "id": 94, "en": "Sweep", "ja": "スイープ / 形状を掃かせる判定", "note": "球やカプセルを動かしながら衝突を調べる。", "category": "UE固有", "level": 2 },
+    { "id": 95, "en": "Channel", "ja": "チャンネル / 判定の種別", "note": "どの種類の当たり判定に反応するかを分ける区分。", "category": "UE固有", "level": 2 },
+    { "id": 96, "en": "Physics", "ja": "物理演算", "note": "重力や慣性をシミュレートする仕組み。", "category": "共通", "level": 1 },
+    { "id": 97, "en": "Simulate", "ja": "シミュレートする", "note": "物理法則に従って自動で動かすこと。", "category": "共通", "level": 2 },
+    { "id": 98, "en": "Impulse", "ja": "撃力 / 瞬間的な力", "note": "一瞬で加える力。吹き飛ばしなどに使う。", "category": "共通", "level": 2 },
+    { "id": 99, "en": "Constraint", "ja": "コンストレイント / 拘束", "note": "動きを制限したり2つの物体をつなぐ設定。", "category": "共通", "level": 3 },
+    { "id": 100, "en": "Animation Blueprint", "ja": "アニメーションブループリント", "note": "キャラのアニメ遷移を制御する専用BP。", "category": "UE固有", "level": 2 },
+    { "id": 101, "en": "Anim Montage", "ja": "アニムモンタージュ", "note": "攻撃など単発アニメを区間再生・制御する仕組み。", "category": "UE固有", "level": 2 },
+    { "id": 102, "en": "State Machine", "ja": "ステートマシン / 状態遷移", "note": "待機・走行・空中などの状態と条件を図で管理する。", "category": "共通", "level": 2 },
+    { "id": 103, "en": "Blend Space", "ja": "ブレンドスペース", "note": "速度などの値に応じて複数アニメを混ぜる仕組み。", "category": "UE固有", "level": 2 },
+    { "id": 104, "en": "Root Motion", "ja": "ルートモーション", "note": "アニメ自体の移動量でキャラを動かす方式。", "category": "共通", "level": 3 },
+    { "id": 105, "en": "Retarget", "ja": "リターゲット / 流用する", "note": "別体格のスケルトンにアニメを移植すること。", "category": "共通", "level": 3 },
+    { "id": 106, "en": "Notify", "ja": "通知 / アニメ通知", "note": "アニメの特定フレームでイベントを発火させる印。", "category": "UE固有", "level": 2 },
+    { "id": 107, "en": "Behavior Tree", "ja": "ビヘイビアツリー", "note": "AIの行動を木構造で組み立てる仕組み。", "category": "共通", "level": 2 },
+    { "id": 108, "en": "Blackboard", "ja": "ブラックボード", "note": "AIが判断に使う情報を書き込む共有メモ。", "category": "UE固有", "level": 2 },
+    { "id": 109, "en": "Nav Mesh", "ja": "ナビメッシュ / 移動可能領域", "note": "AIが歩ける床を示す自動生成データ。", "category": "共通", "level": 2 },
+    { "id": 110, "en": "Perception", "ja": "知覚", "note": "AIが視覚や聴覚でプレイヤーを感知する仕組み。", "category": "UE固有", "level": 2 },
+    { "id": 111, "en": "Data Table", "ja": "データテーブル", "note": "構造体を行として並べた表形式のアセット。", "category": "UE固有", "level": 2 },
+    { "id": 112, "en": "Data Asset", "ja": "データアセット", "note": "設定値のかたまりを資産として持つための入れ物。", "category": "UE固有", "level": 2 },
+    { "id": 113, "en": "Struct", "ja": "構造体", "note": "複数の値をひとまとめにした型。", "category": "共通", "level": 1 },
+    { "id": 114, "en": "Enum", "ja": "列挙型", "note": "選択肢に名前を付けて管理する型。", "category": "共通", "level": 1 },
+    { "id": 115, "en": "Array", "ja": "配列", "note": "同じ型の値を順番に並べて持つ入れ物。", "category": "共通", "level": 1 },
+    { "id": 116, "en": "Map", "ja": "連想配列 / キーと値の対", "note": "キーを指定して値を取り出すコンテナ。", "category": "共通", "level": 2 },
+    { "id": 117, "en": "Set", "ja": "集合 / 重複なしの入れ物", "note": "同じ値を2つ持てないコンテナ。", "category": "共通", "level": 2 },
+    { "id": 118, "en": "Gameplay Tag", "ja": "ゲームプレイタグ", "note": "階層構造を持つ文字列ラベル。状態や種別の識別に使う。", "category": "UE固有", "level": 3 },
+    { "id": 119, "en": "UPROPERTY", "ja": "プロパティ公開マクロ", "note": "C++の変数をエディタやBPから触れるようにする宣言。", "category": "UE固有", "level": 2 },
+    { "id": 120, "en": "UFUNCTION", "ja": "関数公開マクロ", "note": "C++の関数をBPから呼べるようにする宣言。", "category": "UE固有", "level": 2 },
+    { "id": 121, "en": "UCLASS", "ja": "クラス登録マクロ", "note": "C++クラスをUEの管理下に置く宣言。", "category": "UE固有", "level": 2 },
+    { "id": 122, "en": "USTRUCT", "ja": "構造体登録マクロ", "note": "C++の構造体をUEの管理下に置く宣言。", "category": "UE固有", "level": 2 },
+    { "id": 123, "en": "Blueprint Callable", "ja": "BPから呼び出し可能", "note": "C++関数をBPのノードとして使えるようにする指定。", "category": "UE固有", "level": 2 },
+    { "id": 124, "en": "Edit Anywhere", "ja": "どこでも編集可能", "note": "変数をアーキタイプでもインスタンスでも編集可にする指定。", "category": "UE固有", "level": 2 },
+    { "id": 125, "en": "Expose", "ja": "公開する / 露出させる", "note": "内部の値を外から触れる状態にすること。", "category": "共通", "level": 2 },
+    { "id": 126, "en": "Header", "ja": "ヘッダーファイル", "note": "C++で宣言を書く.hファイル。", "category": "共通", "level": 2 },
+    { "id": 127, "en": "Include", "ja": "取り込む / インクルード", "note": "他のファイルの宣言を読み込むこと。", "category": "共通", "level": 2 },
+    { "id": 128, "en": "Pointer", "ja": "ポインタ", "note": "オブジェクトのアドレスを保持する変数。", "category": "共通", "level": 2 },
+    { "id": 129, "en": "Replication", "ja": "レプリケーション / 同期", "note": "サーバーの状態をクライアントへ複製して合わせる仕組み。", "category": "UE固有", "level": 3 },
+    { "id": 130, "en": "Authority", "ja": "権限 / 決定権", "note": "そのオブジェクトの正となる側。通常はサーバー。", "category": "UE固有", "level": 3 },
+    { "id": 131, "en": "Multicast", "ja": "マルチキャスト / 全体配信", "note": "サーバーから全クライアントへまとめて呼ぶ通信。", "category": "UE固有", "level": 3 },
+    { "id": 132, "en": "Reliable", "ja": "確実に届く / 信頼性あり", "note": "取りこぼさず必ず届くことを保証する通信指定。", "category": "共通", "level": 3 },
+    { "id": 133, "en": "Latency", "ja": "遅延 / レイテンシ", "note": "通信や処理にかかる待ち時間。", "category": "共通", "level": 2 },
+    { "id": 134, "en": "Widget", "ja": "ウィジェット / UI部品", "note": "ボタンやテキストなど画面上のUI要素。", "category": "共通", "level": 1 },
+    { "id": 135, "en": "UMG", "ja": "UI作成ツール", "note": "Unreal Motion Graphicsの略。UIを組む仕組み。", "category": "UE固有", "level": 1 },
+    { "id": 136, "en": "Slate", "ja": "スレート", "note": "UEエディタ自体のUIを作っているC++フレームワーク。", "category": "UE固有", "level": 3 },
+    { "id": 137, "en": "HUD", "ja": "常時表示のゲーム内情報", "note": "Heads-Up Displayの略。体力ゲージなど。", "category": "共通", "level": 1 },
+    { "id": 138, "en": "Anchor", "ja": "アンカー / 基準点", "note": "画面サイズが変わってもUIの位置を保つ固定点。", "category": "共通", "level": 2 },
+    { "id": 139, "en": "Game Mode", "ja": "ゲームモード", "note": "ルールや使用クラスを定めるサーバー側の管理役。", "category": "UE固有", "level": 1 },
+    { "id": 140, "en": "Game State", "ja": "ゲームステート", "note": "全員が共有する試合全体の状態を持つクラス。", "category": "UE固有", "level": 2 },
+    { "id": 141, "en": "Player State", "ja": "プレイヤーステート", "note": "スコアなど各プレイヤー固有の情報を持つクラス。", "category": "UE固有", "level": 2 },
+    { "id": 142, "en": "Save Game", "ja": "セーブデータ", "note": "進行状況を保存・読み込みするためのオブジェクト。", "category": "UE固有", "level": 2 },
+    { "id": 143, "en": "Editor Utility Widget", "ja": "エディタ用ツールUI", "note": "自作のエディタ拡張ツールをUMGで作る仕組み。", "category": "UE固有", "level": 3 },
+    { "id": 144, "en": "Package", "ja": "パッケージ化する", "note": "配布できる実行ファイルの形にビルドすること。", "category": "共通", "level": 2 },
+    { "id": 145, "en": "Cook", "ja": "クック / 実機向け変換", "note": "アセットを対象プラットフォーム用に変換する工程。", "category": "UE固有", "level": 3 },
+    { "id": 146, "en": "Shipping", "ja": "製品版ビルド", "note": "デバッグ機能を削った出荷用の構成。", "category": "UE固有", "level": 2 },
+    { "id": 147, "en": "Development", "ja": "開発版ビルド", "note": "ログやデバッグ機能を含む開発中の構成。", "category": "UE固有", "level": 2 },
+    { "id": 148, "en": "Profiler", "ja": "プロファイラ / 性能計測ツール", "note": "どこが重いかを可視化して調べる道具。", "category": "共通", "level": 2 },
+    { "id": 149, "en": "Breakpoint", "ja": "ブレークポイント / 中断点", "note": "処理を一時停止して中身を確認するための印。", "category": "共通", "level": 2 },
+    { "id": 150, "en": "Print String", "ja": "画面へのログ出力", "note": "BPで値を画面に表示して確認する定番ノード。", "category": "UE固有", "level": 1 },
+    { "id": 151, "en": "Deprecated", "ja": "非推奨 / 廃止予定", "note": "今後削除されるため使用を避けるべき機能。", "category": "共通", "level": 2 },
+    { "id": 152, "en": "Refactor", "ja": "リファクタリング / 整理する", "note": "動作を変えずに構造を作り直すこと。", "category": "共通", "level": 2 },
+    { "id": 153, "en": "Deterministic", "ja": "決定論的な / 結果が一定の", "note": "同じ入力なら必ず同じ結果になる性質。", "category": "共通", "level": 3 },
+    { "id": 154, "en": "Threshold", "ja": "閾値 / しきい値", "note": "処理が切り替わる境目の値。", "category": "共通", "level": 2 },
+    { "id": 155, "en": "Interpolate", "ja": "補間する", "note": "2つの値の間をなめらかにつなぐこと。", "category": "共通", "level": 2 },
+    { "id": 156, "en": "Clamp", "ja": "範囲内に収める", "note": "値を上限と下限の間に制限する処理。", "category": "共通", "level": 2 },
+    { "id": 157, "en": "Normalize", "ja": "正規化する", "note": "ベクトルの長さを1にそろえること。", "category": "共通", "level": 2 },
+    { "id": 158, "en": "Offset", "ja": "オフセット / ずらし量", "note": "基準からどれだけずらすかの差分。", "category": "共通", "level": 1 },
+    { "id": 159, "en": "Persistent", "ja": "永続的な / 残り続ける", "note": "レベル遷移や終了をまたいで保持されること。", "category": "共通", "level": 2 },
+    { "id": 160, "en": "Instanced", "ja": "インスタンス化された", "note": "個別に実体を持ち、それぞれ独立して編集できる状態。", "category": "UE固有", "level": 3 }
+  ];
+
+  const WEAK_KEY = "ueTypingTerms_weakWords_v1";
+  const SET_SIZE = 10;
+
+  let ALL_WORDS = [];
+  let state = null; // active game state
+
+  /* ---------- DOM refs ---------- */
+  const screens = {
+    setup: document.getElementById("screen-setup"),
+    game: document.getElementById("screen-game"),
+    result: document.getElementById("screen-result"),
+  };
+  const categoryContainer = document.getElementById("category-container");
+  const levelContainer = document.getElementById("level-container");
+  const priorityCheckbox = document.getElementById("priority-checkbox");
+  const poolInfo = document.getElementById("pool-info");
+  const loadError = document.getElementById("load-error");
+  const startBtn = document.getElementById("start-btn");
+  const resetWeakBtn = document.getElementById("reset-weak-btn");
+
+  const quitBtn = document.getElementById("quit-btn");
+  const progressFill = document.getElementById("progress-fill");
+  const progressText = document.getElementById("progress-text");
+  const qTag = document.getElementById("q-tag");
+  const typingArea = document.getElementById("typing-area");
+  const choiceArea = document.getElementById("choice-area");
+  const qMeaning = document.getElementById("q-meaning");
+  const qNote = document.getElementById("q-note");
+  const lettersEl = document.getElementById("letters");
+  const qWordEn = document.getElementById("q-word-en");
+  const choicesEl = document.getElementById("choices");
+
+  const resultWpm = document.getElementById("result-wpm");
+  const resultWpmLabel = document.getElementById("result-wpm-label");
+  const resultAccuracy = document.getElementById("result-accuracy");
+  const resultCorrect = document.getElementById("result-correct");
+  const resultMissed = document.getElementById("result-missed");
+  const resultTime = document.getElementById("result-time");
+  const missedList = document.getElementById("missed-list");
+  const weakTotalInfo = document.getElementById("weak-total-info");
+  const backBtn = document.getElementById("back-btn");
+  const retryBtn = document.getElementById("retry-btn");
+
+  /* ---------- utils ---------- */
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+  function showScreen(name){
+    Object.keys(screens).forEach(k=>{
+      screens[k].hidden = (k!==name);
+    });
+  }
+  function loadWeak(){
+    try{
+      const raw = localStorage.getItem(WEAK_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }catch(e){
+      return {};
+    }
+  }
+  function saveWeak(obj){
+    try{ localStorage.setItem(WEAK_KEY, JSON.stringify(obj)); }catch(e){ /* ignore quota errors */ }
+  }
+  function formatTime(sec){
+    const m = Math.floor(sec/60);
+    const s = Math.floor(sec%60);
+    return m + ":" + String(s).padStart(2,"0");
+  }
+
+  /* ---------- data loading ---------- */
+  async function loadWords(){
+    try{
+      const res = await fetch("words.json", {cache:"no-store"});
+      if(!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      if(!data || !Array.isArray(data.words) || data.words.length===0){
+        throw new Error("unexpected format");
+      }
+      return data.words;
+    }catch(e){
+      console.warn("words.json の読み込みに失敗したため、内蔵データを使用します。", e);
+      loadError.hidden = false;
+      loadError.textContent = "words.json を読み込めなかったため、内蔵データで起動しました(file:// で開いている場合はローカルサーバー経由での起動を推奨します)。";
+      return FALLBACK_WORDS;
+    }
+  }
+
+  /* ---------- setup screen ---------- */
+  function getSelectedCategories(){
+    return [...categoryContainer.querySelectorAll("input:checked")].map(i=>i.value);
+  }
+  function getSelectedLevels(){
+    return [...levelContainer.querySelectorAll("input:checked")].map(i=>Number(i.value));
+  }
+  function getCurrentPool(){
+    const cats = getSelectedCategories();
+    const lvls = getSelectedLevels();
+    return ALL_WORDS.filter(w=> cats.includes(w.category) && lvls.includes(w.level));
+  }
+  function buildFilterUI(){
+    const cats = [...new Set(ALL_WORDS.map(w=>w.category))];
+    const lvls = [...new Set(ALL_WORDS.map(w=>w.level))].sort((a,b)=>a-b);
+
+    categoryContainer.innerHTML = cats.map(c=>
+      `<label class="chip"><input type="checkbox" class="cat-check" value="${c}" checked>${c}</label>`
+    ).join("");
+    levelContainer.innerHTML = lvls.map(l=>
+      `<label class="chip"><input type="checkbox" class="lvl-check" value="${l}" checked>Lv${l}</label>`
+    ).join("");
+
+    categoryContainer.addEventListener("change", updatePoolPreview);
+    levelContainer.addEventListener("change", updatePoolPreview);
+  }
+  function updatePoolPreview(){
+    const pool = getCurrentPool();
+    const weak = loadWeak();
+    const weakInPool = pool.filter(w=>weak[w.id]).length;
+    if(pool.length===0){
+      poolInfo.innerHTML = `<span class="warn">選択した条件に一致する単語がありません。カテゴリ/難易度を見直してください。</span>`;
+      startBtn.disabled = true;
+      return;
+    }
+    const setCount = Math.min(SET_SIZE, pool.length);
+    poolInfo.innerHTML =
+      `出題対象: <b>${pool.length}</b>語 (うち苦手 <b>${weakInPool}</b>語) / 1セット <b>${setCount}</b>問` +
+      (pool.length < SET_SIZE ? `<br><span class="warn">対象が${SET_SIZE}語未満のため、今回は${setCount}問で出題します。</span>` : "");
+    startBtn.disabled = false;
+  }
+  function resetWeakList(){
+    if(!confirm("苦手リストをすべてリセットします。よろしいですか?")) return;
+    saveWeak({});
+    updatePoolPreview();
+  }
+
+  /* ---------- question set building ---------- */
+  function buildQuestionSet(pool, weakMap, usePriority){
+    let arr = shuffle(pool);
+    if(usePriority){
+      arr = arr
+        .map((w,i)=>({w, weight:(weakMap[w.id]||0), rand:i}))
+        .sort((a,b)=> b.weight - a.weight || a.rand - b.rand)
+        .map(x=>x.w);
+    }
+    return arr.slice(0, Math.min(SET_SIZE, arr.length));
+  }
+
+  /* ---------- weak list update ---------- */
+  function updateWeak(word, hadMistake){
+    const weak = loadWeak();
+    if(hadMistake){
+      weak[word.id] = Math.min((weak[word.id]||0) + 1, 5);
+    }else if(weak[word.id]){
+      weak[word.id] -= 1;
+      if(weak[word.id] <= 0) delete weak[word.id];
+    }
+    saveWeak(weak);
+  }
+
+  /* ---------- game flow ---------- */
+  function startGame(){
+    const mode = document.querySelector('input[name="mode"]:checked').value;
+    const pool = getCurrentPool();
+    if(pool.length===0) return;
+    const weak = loadWeak();
+    const questions = buildQuestionSet(pool, weak, priorityCheckbox.checked);
+
+    state = {
+      mode,
+      questions,
+      index: 0,
+      startTime: performance.now(),
+      results: [],
+      typedLen: 0,
+      hadMistake: false,
+    };
+
+    showScreen("game");
+    typingArea.hidden = (mode !== "typing");
+    choiceArea.hidden = (mode !== "choice");
+    if(mode === "typing"){
+      document.addEventListener("keydown", onTypingKeyDown);
+    }
+    updateProgressUI();
+    renderQuestion();
+  }
+
+  function updateProgressUI(){
+    const total = state.questions.length;
+    progressText.textContent = `${state.index+1} / ${total}`;
+    progressFill.style.width = Math.round((state.index/total)*100) + "%";
+  }
+
+  function currentQuestion(){
+    return state.questions[state.index];
+  }
+
+  function renderQuestion(){
+    const q = currentQuestion();
+    qTag.textContent = `${q.category} ・ Lv${q.level}`;
+    state.hadMistake = false;
+
+    if(state.mode === "typing"){
+      state.typedLen = 0;
+      qMeaning.textContent = q.ja;
+      qNote.textContent = q.note || "";
+      lettersEl.innerHTML = "";
+      for(const ch of q.en){
+        const span = document.createElement("span");
+        span.className = "letter" + (ch===" " ? " space" : "");
+        span.textContent = "";
+        lettersEl.appendChild(span);
+      }
+      if(lettersEl.firstChild) lettersEl.firstChild.classList.add("active");
+    }else{
+      qWordEn.textContent = q.en;
+      const distractors = pickDistractors(q, 3);
+      const options = shuffle([q, ...distractors]);
+      choicesEl.innerHTML = "";
+      options.forEach(opt=>{
+        const btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.type = "button";
+        btn.textContent = opt.ja;
+        btn.addEventListener("click", ()=> onChoiceClick(btn, opt, q));
+        choicesEl.appendChild(btn);
+      });
+    }
+  }
+
+  function pickDistractors(q, n){
+    const pool = ALL_WORDS.filter(w=> w.id!==q.id && w.ja!==q.ja);
+    const sameCat = shuffle(pool.filter(w=>w.category===q.category));
+    const rest = shuffle(pool.filter(w=>w.category!==q.category));
+    const combined = sameCat.concat(rest);
+    const seen = new Set([q.ja]);
+    const result = [];
+    for(const w of combined){
+      if(seen.has(w.ja)) continue;
+      seen.add(w.ja);
+      result.push(w);
+      if(result.length>=n) break;
+    }
+    return result;
+  }
+
+  /* --- typing mode input --- */
+  function onTypingKeyDown(e){
+    if(!state || state.mode !== "typing") return;
+    if(e.key.length !== 1) return; // ignore Shift, Enter, Backspace, etc.
+    e.preventDefault();
+
+    const q = currentQuestion();
+    const expected = q.en[state.typedLen];
+    const spans = lettersEl.children;
+
+    if(e.key === expected){
+      const span = spans[state.typedLen];
+      span.textContent = expected === " " ? " " : expected;
+      span.classList.remove("active");
+      span.classList.add("correct");
+      state.typedLen++;
+      if(state.typedLen < q.en.length){
+        spans[state.typedLen].classList.add("active");
+      }else{
+        document.removeEventListener("keydown", onTypingKeyDown);
+        setTimeout(finishQuestion, 260);
+      }
+    }else{
+      state.hadMistake = true;
+      const span = spans[state.typedLen];
+      span.classList.remove("error");
+      // restart animation
+      void span.offsetWidth;
+      span.classList.add("error");
+      setTimeout(()=> span.classList.remove("error"), 240);
+    }
+  }
+
+  /* --- choice mode input --- */
+  function onChoiceClick(btn, opt, q){
+    if(btn.disabled) return;
+    if(opt.id === q.id){
+      btn.classList.add("correct");
+      [...choicesEl.children].forEach(b=> b.disabled = true);
+      setTimeout(finishQuestion, 350);
+    }else{
+      state.hadMistake = true;
+      btn.classList.remove("error");
+      void btn.offsetWidth;
+      btn.classList.add("error");
+      btn.disabled = true;
+    }
+  }
+
+  function finishQuestion(){
+    const q = currentQuestion();
+    state.results.push({ id:q.id, en:q.en, ja:q.ja, hadMistake: state.hadMistake });
+    updateWeak(q, state.hadMistake);
+    state.index++;
+    if(state.index >= state.questions.length){
+      endGame();
+    }else{
+      updateProgressUI();
+      renderQuestion();
+      if(state.mode === "typing"){
+        document.addEventListener("keydown", onTypingKeyDown);
+      }
+    }
+  }
+
+  function quitGame(){
+    if(!confirm("この セットを中断して設定画面に戻ります。よろしいですか?")) return;
+    document.removeEventListener("keydown", onTypingKeyDown);
+    state = null;
+    showScreen("setup");
+    updatePoolPreview();
+  }
+
+  function endGame(){
+    document.removeEventListener("keydown", onTypingKeyDown);
+    const elapsedSec = (performance.now() - state.startTime) / 1000;
+    const elapsedMin = elapsedSec / 60;
+    const totalChars = state.questions.reduce((s,q)=> s + q.en.length, 0);
+    const wpm = elapsedMin > 0 ? Math.round((totalChars/5)/elapsedMin) : 0;
+    const correctCount = state.results.filter(r=>!r.hadMistake).length;
+    const total = state.results.length;
+    const accuracy = total>0 ? Math.round((correctCount/total)*1000)/10 : 0;
+    const missed = state.results.filter(r=>r.hadMistake);
+
+    resultWpm.textContent = wpm;
+    resultWpmLabel.textContent = state.mode === "typing" ? "WPM" : "WPM (換算)";
+    resultAccuracy.textContent = accuracy + "%";
+    resultCorrect.textContent = correctCount;
+    resultMissed.textContent = missed.length;
+    resultTime.textContent = formatTime(elapsedSec);
+
+    if(missed.length===0){
+      missedList.innerHTML = "";
+      missedList.hidden = true;
+      const empty = document.createElement("div");
+      empty.className = "missed-empty";
+      empty.textContent = "ミスなし!パーフェクトです 🎉";
+      missedList.parentNode.insertBefore(empty, missedList.nextSibling);
+      missedList._emptyEl = empty;
+    }else{
+      if(missedList._emptyEl){ missedList._emptyEl.remove(); missedList._emptyEl = null; }
+      missedList.hidden = false;
+      missedList.innerHTML = missed.map(r=>
+        `<div class="missed-item"><span class="en">${escapeHtml(r.en)}</span><span class="ja">${escapeHtml(r.ja)}</span></div>`
+      ).join("");
+    }
+
+    const weakTotal = Object.keys(loadWeak()).length;
+    weakTotalInfo.innerHTML = `現在の苦手リスト: <b>${weakTotal}</b>語(次回のセットで優先的に出題されます)`;
+
+    showScreen("result");
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, ch=>({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+    }[ch]));
+  }
+
+  /* ---------- wire up ---------- */
+  startBtn.addEventListener("click", startGame);
+  resetWeakBtn.addEventListener("click", resetWeakList);
+  quitBtn.addEventListener("click", quitGame);
+  backBtn.addEventListener("click", ()=>{ showScreen("setup"); updatePoolPreview(); });
+  retryBtn.addEventListener("click", startGame);
+
+  /* ---------- init ---------- */
+  (async function init(){
+    ALL_WORDS = await loadWords();
+    buildFilterUI();
+    updatePoolPreview();
+  })();
+})();
+</script>
+</body>
+</html>
