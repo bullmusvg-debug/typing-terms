@@ -18,7 +18,7 @@ window.SEL = (function(){
   const ENGINES = [
     { id: "ue",    name: "Unreal Engine", short: "UE",    path: "/ue/",    data: "/data/words-ue.json",    status: "public" },
     { id: "unity", name: "Unity",         short: "Unity", path: "/unity/", data: "/data/words-unity.json", status: "public" },
-    { id: "godot", name: "Godot",         short: "Godot", path: "/godot/", data: "/data/words-godot.json", status: "coming" },
+    { id: "godot", name: "Godot",         short: "Godot", path: "/godot/", data: "/data/words-godot.json", status: "public" },
     { id: "verse", name: "Verse",         short: "Verse", path: "/verse/", data: "/data/words-verse.json", status: "coming" },
   ];
   function engineById(id){ return ENGINES.find(e=> e.id === id) || null; }

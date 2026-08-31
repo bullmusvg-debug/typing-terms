@@ -213,7 +213,9 @@
       "category": "Unity固有",
       "level": 2,
       "where": "Rigidbodyへの力の加算はここに書く",
-      "phrase": "void FixedUpdate()"
+      "phrase": "void FixedUpdate()",
+      "concept": "physics-update",
+      "match": "同義"
     },
     {
       "id": 1018,

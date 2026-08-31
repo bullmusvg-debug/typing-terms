@@ -7,6 +7,7 @@
   //   /            -> /index.html            (SEL トップ)
   //   /ue/         -> /ue/index.html          (Unreal Engine 編)
   //   /unity/      -> /unity/index.html       (Unity 編)
+  //   /godot/      -> /godot/index.html       (Godot 編)
   //   /ue          -> /ue/ へリダイレクト     (html_handling: auto-trailing-slash)
   //   /data/*.json, /assets/*, /favicon.*, /apple-touch-icon.png -> 静的ファイル
   //   未知パス     -> 404                     (not_found_handling: none)

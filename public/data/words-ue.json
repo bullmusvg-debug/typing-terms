@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": 3,
+    "version": 4,
     "engine": "Unreal Engine",
     "note": "UE寄りのゲーム開発英単語データ。categoryは「共通」(エンジン問わず使う一般的なゲーム/プログラミング用語)と「UE固有」(Unreal Engine特有の名称)。levelは1=頻出基礎, 2=中級, 3=応用。",
     "fields": {
@@ -263,7 +263,9 @@
       "category": "共通",
       "level": 2,
       "where": "Event Dispatcherに、受け取る側の処理を登録するとき",
-      "phrase": "Bind Event to OnDeath — イベントに処理を紐づける"
+      "phrase": "Bind Event to OnDeath — イベントに処理を紐づける",
+      "concept": "bind",
+      "match": "近い"
     },
     {
       "id": 23,
