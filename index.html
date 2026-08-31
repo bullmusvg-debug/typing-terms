@@ -3,7 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spell Engine Library (SEL)</title>
+<title>Spell Engine Library (SEL) — Unreal Engine 編</title>
+
+<!-- ============================================================
+     名称・説明文・OGP のマスターは末尾スクリプトの APP_INFO。
+     クローラは JS を実行しないため、同じ値をこの下の meta 群にも
+     書き写してある。エンジン (UE / Unity / Godot) を切り替えるときは
+     APP_INFO と、この title・meta 群の両方を更新すること。
+     ブラウザ表示時は applyAppInfo() が APP_INFO の値で上書きする。
+     ============================================================ -->
+<meta name="description" content="ゲームエンジン開発で使う英単語を、使用場面や実際のノード名・設定項目とセットで覚えるタイピング学習ツールです。まずは Unreal Engine 編として、頻出160語をレベル別に収録しています。">
+<link rel="canonical" href="https://typing-terms.bullmus-vg.workers.dev/">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Spell Engine Library">
+<meta property="og:title" content="Spell Engine Library (SEL) — Unreal Engine 編">
+<meta property="og:description" content="ゲームエンジン開発で使う英単語を、使用場面や実際のノード名・設定項目とセットで覚えるタイピング学習ツールです。まずは Unreal Engine 編として、頻出160語をレベル別に収録しています。">
+<meta property="og:url" content="https://typing-terms.bullmus-vg.workers.dev/">
+<meta property="og:image" content="https://typing-terms.bullmus-vg.workers.dev/ogp.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Spell Engine Library (SEL) — Unreal Engine 編">
+<meta name="twitter:description" content="ゲームエンジン開発で使う英単語を、使用場面や実際のノード名・設定項目とセットで覚えるタイピング学習ツールです。まずは Unreal Engine 編として、頻出160語をレベル別に収録しています。">
+<meta name="twitter:image" content="https://typing-terms.bullmus-vg.workers.dev/ogp.png">
+
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
 <style>
   :root{
     --bg:#12141a;
@@ -586,6 +613,58 @@
     font-size:0.9rem;
     padding:44px 0;
   }
+
+  /* --- word list (dictionary) screen --- */
+  #screen-dict h2{
+    font-size:1.1rem;
+    margin:0 0 12px;
+  }
+  .dict-progress{
+    font-size:0.8rem;
+    color:var(--sub);
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 13px;
+    margin:0 0 14px;
+    line-height:1.95;
+  }
+  .dict-progress b{color:var(--text);}
+  .dict-search{
+    width:100%;
+    padding:10px 12px;
+    margin-bottom:12px;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--text);
+    font-size:0.9rem;
+    font-family:inherit;
+  }
+  .dict-search:focus{outline:none;border-color:var(--accent);}
+  .dict-search::placeholder{color:var(--sub);}
+  .dict-filters{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+    margin-bottom:14px;
+  }
+  .dict-count{
+    font-size:0.76rem;
+    color:var(--sub);
+    margin-bottom:8px;
+  }
+  .status-badge{
+    font-size:0.66rem;
+    padding:2px 9px;
+    border-radius:999px;
+    white-space:nowrap;
+    border:1px solid var(--border);
+    color:var(--sub);
+  }
+  .status-badge.st-learning { color:var(--warn);   border-color:rgba(255,203,107,0.4); }
+  .status-badge.st-graduated{ color:var(--good);   border-color:rgba(94,230,160,0.4); }
+  .status-badge.st-cleared  { color:var(--accent); border-color:rgba(78,161,255,0.4); }
 </style>
 </head>
 <body>
@@ -631,8 +710,9 @@
 
     <div class="pool-info" id="pool-info">読み込み中...</div>
 
-    <div class="field" style="margin-top:18px;margin-bottom:0;">
-      <button class="btn btn-ghost" id="weak-book-btn" type="button" style="width:100%;">📓 苦手単語帳を見る</button>
+    <div class="field" style="margin-top:18px;margin-bottom:0;display:flex;gap:10px;">
+      <button class="btn btn-ghost" id="dict-btn" type="button" style="flex:1;">📖 単語一覧</button>
+      <button class="btn btn-ghost" id="weak-book-btn" type="button" style="flex:1;">📓 苦手単語帳</button>
     </div>
 
     <div class="setup-footer">
@@ -731,6 +811,29 @@
     </div>
   </section>
 
+  <!-- ===== word list (dictionary) screen ===== -->
+  <section id="screen-dict" class="card" hidden>
+    <h2>📖 単語一覧</h2>
+    <p class="dict-progress" id="dict-progress"></p>
+
+    <input type="search" id="dict-search" class="dict-search" autocomplete="off"
+           placeholder="検索: 英語・日本語・解説・ノード名など (例: On Component Begin Overlap)">
+
+    <div class="dict-filters">
+      <div class="chip-group" id="dict-cat"></div>
+      <div class="chip-group" id="dict-lvl"></div>
+      <div class="chip-group" id="dict-status"></div>
+    </div>
+
+    <div class="dict-count" id="dict-count"></div>
+    <div class="weak-list" id="dict-list"></div>
+    <div class="weak-empty" id="dict-empty" hidden>該当する単語がありません。</div>
+
+    <div class="result-footer" style="margin-top:20px;">
+      <button class="btn btn-ghost" id="dict-back-btn" type="button">設定に戻る</button>
+    </div>
+  </section>
+
   <footer id="app-footer">
     <p id="footer-text"></p>
     <p><a id="footer-repo" target="_blank" rel="noopener noreferrer">GitHub リポジトリ</a></p>
@@ -742,7 +845,9 @@
   "use strict";
 
   /* ---------------------------------------------------------
-   * 単語データ(このファイルが唯一の正データ)
+   * 単語データ(実行時の正データ。編集元マスターは words.json)
+   *  - 各単語オブジェクトは自由にフィールドを追加できる。
+   *    展開表示に出したいものは上部の DETAIL_FIELDS に登録する。
    * --------------------------------------------------------- */
   const WORDS_DATA = [
     { "id": 1, "en": "Actor", "ja": "アクター", "note": "レベルに配置できるすべてのオブジェクトの基底クラス。", "where": "アウトライナーに並ぶ要素はすべてこれ。Place Actorsパネルからレベルに配置する", "phrase": "Get All Actors of Class — 指定クラスのアクターを全取得するノード", "category": "UE固有", "level": 1 },
@@ -910,10 +1015,34 @@
   const ENGINE_ID = "ue"; // 記録キーの前置。Unity版/Godot版とのID衝突を避ける
   const WEAK_KEY = "sel_weakWords_v1";
   const OLD_WEAK_KEY = "ueTypingTerms_weakWords_v1";
+  const PROGRESS_KEY = "sel_wordProgress_v1"; // 出題済み / 卒業済みフラグ。sel_weakWords_v1 とは別管理
 
   /* ---------------------------------------------------------
-   * アプリ名称・説明文はここに集約する。
-   * Unity版 / Godot版を作るときはこのオブジェクトを差し替えるだけでよい。
+   * 単語の展開表示に出すフィールド。ここに1行足すだけで
+   * 「単語一覧」「苦手単語帳」の両方の展開部に反映される。
+   * 例) 今後エンジン間の対応語(UEのLevel ⇔ UnityのScene 等)を扱うときは、
+   *     各単語に "equivalents" のようなフィールドを追加し、
+   *     ここに { key: "equivalents", label: "他エンジンでの呼び名" } を足す。
+   * --------------------------------------------------------- */
+  const DETAIL_FIELDS = [
+    { key: "note",   label: "note" },
+    { key: "where",  label: "where" },
+    { key: "phrase", label: "phrase" },
+  ];
+
+  // 学習状況
+  const WORD_STATUS = {
+    unseen:    { key: "unseen",    label: "未出題",   cls: "st-unseen" },
+    learning:  { key: "learning",  label: "学習中",   cls: "st-learning" },
+    graduated: { key: "graduated", label: "卒業",     cls: "st-graduated" },
+    cleared:   { key: "cleared",   label: "正解済み", cls: "st-cleared" },
+  };
+
+  /* ---------------------------------------------------------
+   * アプリ名称・説明文・共有情報(OGP)はここに集約する。
+   * Unity版 / Godot版を作るときはこのオブジェクトを差し替える。
+   * ※ OGP はクローラがJSを実行しないため、同じ値をページ先頭の
+   *    title・meta 群にも書いてある。エンジン切替時は両方を更新すること。
    * --------------------------------------------------------- */
   const APP_INFO = {
     title:    "Spell Engine Library",
@@ -921,7 +1050,12 @@
     edition:  "Unreal Engine 編",
     tagline:  "ゲームエンジン開発の頻出英単語を、意味を見て身体で覚える",
     repoUrl:  "https://github.com/your-account/typing-terms", // TODO: 実際のリポジトリURLに差し替え
+    siteUrl:  "https://typing-terms.bullmus-vg.workers.dev/",
     footer:   "Spell Engine Library (SEL) は、ゲームエンジン開発でよく使う英単語を意味と結びつけて覚えるための学習ツールです。学習記録はこのブラウザ内にのみ保存され、サーバーには送信されません。",
+
+    // OGP / Twitter Card 用
+    ogDescription: "ゲームエンジン開発で使う英単語を、使用場面や実際のノード名・設定項目とセットで覚えるタイピング学習ツールです。まずは Unreal Engine 編として、頻出160語をレベル別に収録しています。",
+    ogImage:       "ogp.png", // siteUrl からの相対パス。画像は後で用意して差し替え
   };
 
   /* ---------------------------------------------------------
@@ -948,6 +1082,7 @@
     game: document.getElementById("screen-game"),
     result: document.getElementById("screen-result"),
     weak: document.getElementById("screen-weak"),
+    dict: document.getElementById("screen-dict"),
   };
   const categoryContainer = document.getElementById("category-container");
   const levelContainer = document.getElementById("level-container");
@@ -961,6 +1096,17 @@
   const weakEmptyEl = document.getElementById("weak-empty");
   const weakBackBtn = document.getElementById("weak-back-btn");
   const weakResetBtn = document.getElementById("weak-reset-btn");
+
+  const dictBtn = document.getElementById("dict-btn");
+  const dictProgressEl = document.getElementById("dict-progress");
+  const dictSearchEl = document.getElementById("dict-search");
+  const dictCatEl = document.getElementById("dict-cat");
+  const dictLvlEl = document.getElementById("dict-lvl");
+  const dictStatusEl = document.getElementById("dict-status");
+  const dictCountEl = document.getElementById("dict-count");
+  const dictListEl = document.getElementById("dict-list");
+  const dictEmptyEl = document.getElementById("dict-empty");
+  const dictBackBtn = document.getElementById("dict-back-btn");
 
   const quitBtn = document.getElementById("quit-btn");
   const progressFill = document.getElementById("progress-fill");
@@ -1058,6 +1204,48 @@
     }catch(e){ /* 壊れた旧データは捨てる */ }
     try{ localStorage.removeItem(OLD_WEAK_KEY); }catch(e){}
   }
+
+  /* ---------- word progress (出題済み / 卒業済み) ---------- */
+  // 記録形式: { "ue:89": { seen: true, graduated: true }, ... }
+  // フラグが無い場合は未設定(false)として扱う。sel_weakWords_v1 には触れない。
+  function loadProgress(){
+    try{
+      const raw = localStorage.getItem(PROGRESS_KEY);
+      const obj = raw ? JSON.parse(raw) : {};
+      return (obj && typeof obj === "object") ? obj : {};
+    }catch(e){
+      return {};
+    }
+  }
+  function saveProgress(obj){
+    try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(obj)); }catch(e){ /* quota */ }
+  }
+  function markProgress(word, patch){
+    const p = loadProgress();
+    const key = weakIdFor(word);
+    const cur = p[key] || {};
+    let changed = false;
+    Object.keys(patch).forEach(k=>{ if(cur[k] !== patch[k]){ cur[k] = patch[k]; changed = true; } });
+    if(changed){ p[key] = cur; saveProgress(p); }
+  }
+  // weak / progress を渡して現在の学習状況を返す
+  function wordStatus(word, weak, progress){
+    const key = weakIdFor(word);
+    if(weak[key]) return WORD_STATUS.learning;      // 苦手リストに入っている
+    const p = progress[key] || {};
+    if(p.graduated) return WORD_STATUS.graduated;   // 卒業したことがある
+    if(p.seen) return WORD_STATUS.cleared;          // 出題されたが苦手入りしなかった
+    return WORD_STATUS.unseen;                      // まだ一度も出題されていない
+  }
+
+  /* ---------- shared: 展開表示の行 ---------- */
+  function renderDetailRows(w){
+    const rows = DETAIL_FIELDS
+      .filter(f=> w[f.key])
+      .map(f=> `<div><b>${escapeHtml(f.label)}</b>${escapeHtml(String(w[f.key]))}</div>`);
+    return rows.length ? rows.join("") : `<div>詳細情報はありません。</div>`;
+  }
+
   function formatTime(sec){
     const m = Math.floor(sec/60);
     const s = Math.floor(sec%60);
@@ -1106,11 +1294,12 @@
     startBtn.disabled = false;
   }
   function resetWeakList(){
-    if(!confirm("苦手リストをすべてリセットします。よろしいですか?")) return;
+    if(!confirm("苦手リストをすべてリセットします。よろしいですか?\n(学習状況「出題済み・卒業済み」の記録は残ります)")) return;
     saveWeak({});
     try{ localStorage.removeItem(OLD_WEAK_KEY); }catch(e){}
     updatePoolPreview();
     if(!screens.weak.hidden) renderWeakBook();
+    if(!screens.dict.hidden){ updateDictProgress(); renderDictionary(); }
   }
 
   /* ---------- question set building ---------- */
@@ -1133,16 +1322,18 @@
     const existing = weak[key];
 
     if(outcome === "clean"){
-      if(!existing) return; // 苦手リストにない単語は記録しない
+      if(!existing) return false; // 苦手リストにない単語は記録しない
       const e = normalizeEntry(existing);
       e.clean += 1;
+      let graduated = false;
       if(e.clean >= CONFIG.graduateCleanStreak){
         delete weak[key]; // 卒業
+        graduated = true;
       }else{
         weak[key] = e;
       }
       saveWeak(weak);
-      return;
+      return graduated;
     }
 
     // miss / skip は強制的に苦手リスト入りとし、clean を 0 に戻す
@@ -1155,6 +1346,7 @@
     e.clean = 0;
     weak[key] = e;
     saveWeak(weak);
+    return false;
   }
 
   /* ---------- game flow ---------- */
@@ -1385,7 +1577,9 @@
       chars: q.en.length,
       elapsedMs: state.qElapsedMs || 0,
     });
-    recordResult(q, outcome);
+    markProgress(q, { seen: true });
+    const graduated = recordResult(q, outcome);
+    if(graduated) markProgress(q, { graduated: true });
     state.index++;
     if(state.index >= state.questions.length){
       endGame();
@@ -1508,11 +1702,6 @@
     weakEmptyEl.hidden = true;
     weakListEl.innerHTML = rows.map(r=>{
       const w = r.word;
-      const detail = [
-        w.note   ? `<div><b>note</b>${escapeHtml(w.note)}</div>`     : "",
-        w.where  ? `<div><b>where</b>${escapeHtml(w.where)}</div>`    : "",
-        w.phrase ? `<div><b>phrase</b>${escapeHtml(w.phrase)}</div>`  : "",
-      ].filter(Boolean).join("") || `<div>詳細情報はありません。</div>`;
       return `
         <div class="weak-row">
           <div class="weak-row-main">
@@ -1529,11 +1718,108 @@
             <span class="tag">Lv${escapeHtml(String(w.level))}</span>
             <span class="tag grad">卒業まであと ${Math.max(0, CONFIG.graduateCleanStreak - r.clean)} 回</span>
           </div>
-          <div class="weak-detail">${detail}</div>
+          <div class="weak-detail">${renderDetailRows(w)}</div>
         </div>`;
     }).join("");
   }
   weakListEl.addEventListener("click", e=>{
+    const row = e.target.closest(".weak-row");
+    if(row) row.classList.toggle("open");
+  });
+
+  /* ---------- word list (dictionary) screen ---------- */
+  const searchHay = new Map(); // word.id -> 検索用の小文字テキスト
+  let dictFiltersBuilt = false;
+
+  function buildSearchIndex(){
+    ALL_WORDS.forEach(w=>{
+      const parts = ["en","ja","note","where","phrase"].map(k=> w[k] || "");
+      searchHay.set(w.id, parts.join(" ␟ ").toLowerCase());
+    });
+  }
+  function buildDictFilters(){
+    const cats = [...new Set(ALL_WORDS.map(w=>w.category))];
+    const lvls = [...new Set(ALL_WORDS.map(w=>w.level))].sort((a,b)=>a-b);
+    dictCatEl.innerHTML = cats.map(c=>
+      `<label class="chip"><input type="checkbox" class="dict-cat-check" value="${escapeHtml(c)}" checked>${escapeHtml(c)}</label>`
+    ).join("");
+    dictLvlEl.innerHTML = lvls.map(l=>
+      `<label class="chip"><input type="checkbox" class="dict-lvl-check" value="${l}" checked>Lv${l}</label>`
+    ).join("");
+    dictStatusEl.innerHTML = Object.keys(WORD_STATUS).map(k=>
+      `<label class="chip"><input type="checkbox" class="dict-status-check" value="${k}" checked>${WORD_STATUS[k].label}</label>`
+    ).join("");
+    dictCatEl.addEventListener("change", renderDictionary);
+    dictLvlEl.addEventListener("change", renderDictionary);
+    dictStatusEl.addEventListener("change", renderDictionary);
+    dictSearchEl.addEventListener("input", renderDictionary);
+    dictFiltersBuilt = true;
+  }
+  function checkedValues(container, cls){
+    return [...container.querySelectorAll("input." + cls + ":checked")].map(i=>i.value);
+  }
+  function updateDictProgress(){
+    const weak = loadWeak();
+    const progress = loadProgress();
+    const c = { unseen:0, learning:0, graduated:0, cleared:0 };
+    ALL_WORDS.forEach(w=>{ c[wordStatus(w, weak, progress).key]++; });
+    dictProgressEl.innerHTML =
+      `全 <b>${ALL_WORDS.length}</b> 語　` +
+      `未出題 <b>${c.unseen}</b>　学習中 <b>${c.learning}</b>　` +
+      `卒業 <b>${c.graduated}</b>　正解済み <b>${c.cleared}</b>`;
+  }
+  function renderDictionary(){
+    const weak = loadWeak();
+    const progress = loadProgress();
+    const cats = checkedValues(dictCatEl, "dict-cat-check");
+    const lvls = checkedValues(dictLvlEl, "dict-lvl-check").map(Number);
+    const stats = checkedValues(dictStatusEl, "dict-status-check");
+    const q = dictSearchEl.value.trim().toLowerCase();
+
+    const rows = ALL_WORDS
+      .filter(w=>{
+        if(!cats.includes(w.category)) return false;
+        if(!lvls.includes(w.level)) return false;
+        if(!stats.includes(wordStatus(w, weak, progress).key)) return false;
+        if(q && !(searchHay.get(w.id) || "").includes(q)) return false;
+        return true;
+      })
+      .sort((a,b)=> a.en.toLowerCase().localeCompare(b.en.toLowerCase()));
+
+    dictCountEl.textContent = `${rows.length} 件` + (q ? ` (「${dictSearchEl.value.trim()}」で検索)` : "");
+
+    if(rows.length === 0){
+      dictListEl.innerHTML = "";
+      dictListEl.hidden = true;
+      dictEmptyEl.hidden = false;
+      return;
+    }
+    dictListEl.hidden = false;
+    dictEmptyEl.hidden = true;
+    dictListEl.innerHTML = rows.map(w=>{
+      const st = wordStatus(w, weak, progress);
+      return `
+        <div class="weak-row">
+          <div class="weak-row-main">
+            <span class="en">${escapeHtml(w.en)}</span>
+            <span class="ja">${escapeHtml(w.ja)}</span>
+            <span class="status-badge ${st.cls}">${escapeHtml(st.label)}</span>
+          </div>
+          <div class="weak-chips">
+            <span class="tag">${escapeHtml(w.category)}</span>
+            <span class="tag">Lv${escapeHtml(String(w.level))}</span>
+          </div>
+          <div class="weak-detail">${renderDetailRows(w)}</div>
+        </div>`;
+    }).join("");
+  }
+  function openDictionary(){
+    if(!dictFiltersBuilt) buildDictFilters();
+    updateDictProgress();
+    renderDictionary();
+    showScreen("dict");
+  }
+  dictListEl.addEventListener("click", e=>{
     const row = e.target.closest(".weak-row");
     if(row) row.classList.toggle("open");
   });
@@ -1547,10 +1833,14 @@
   weakBookBtn.addEventListener("click", ()=>{ renderWeakBook(); showScreen("weak"); });
   weakBackBtn.addEventListener("click", ()=>{ showScreen("setup"); updatePoolPreview(); });
   weakResetBtn.addEventListener("click", resetWeakList);
+  dictBtn.addEventListener("click", openDictionary);
+  dictBackBtn.addEventListener("click", ()=>{ showScreen("setup"); updatePoolPreview(); });
 
   /* ---------- app info ---------- */
   function applyAppInfo(){
-    document.title = `${APP_INFO.title} (${APP_INFO.abbr}) — ${APP_INFO.edition}`;
+    const fullTitle = `${APP_INFO.title} (${APP_INFO.abbr}) — ${APP_INFO.edition}`;
+    document.title = fullTitle;
+
     const titleEl = document.getElementById("app-title");
     const subEl = document.getElementById("app-subtitle");
     const footerText = document.getElementById("footer-text");
@@ -1559,6 +1849,29 @@
     if(subEl) subEl.textContent = `${APP_INFO.abbr}・${APP_INFO.edition} — ${APP_INFO.tagline}`;
     if(footerText) footerText.textContent = APP_INFO.footer;
     if(footerRepo) footerRepo.href = APP_INFO.repoUrl;
+
+    // OGP / Twitter Card / canonical を APP_INFO の値で上書き(ページ先頭の静的 <meta> はクローラ向け)
+    let imgUrl = APP_INFO.ogImage;
+    try{ imgUrl = new URL(APP_INFO.ogImage, APP_INFO.siteUrl).href; }catch(e){ /* siteUrl 未設定でも壊さない */ }
+    const metaMap = {
+      'meta[name="description"]':         APP_INFO.ogDescription,
+      'meta[property="og:type"]':         "website",
+      'meta[property="og:site_name"]':    APP_INFO.title,
+      'meta[property="og:title"]':        fullTitle,
+      'meta[property="og:description"]':  APP_INFO.ogDescription,
+      'meta[property="og:url"]':          APP_INFO.siteUrl,
+      'meta[property="og:image"]':        imgUrl,
+      'meta[name="twitter:card"]':        "summary_large_image",
+      'meta[name="twitter:title"]':       fullTitle,
+      'meta[name="twitter:description"]': APP_INFO.ogDescription,
+      'meta[name="twitter:image"]':       imgUrl,
+    };
+    Object.keys(metaMap).forEach(sel=>{
+      const el = document.head.querySelector(sel);
+      if(el && metaMap[sel] != null) el.setAttribute("content", metaMap[sel]);
+    });
+    const canon = document.head.querySelector('link[rel="canonical"]');
+    if(canon && APP_INFO.siteUrl) canon.setAttribute("href", APP_INFO.siteUrl);
   }
 
   /* ---------- touch devices: default to choice mode ---------- */
@@ -1577,6 +1890,7 @@
     applyTouchDefaults();
     migrateWeak();
     buildFilterUI();
+    buildSearchIndex();
     updatePoolPreview();
   })();
 })();
