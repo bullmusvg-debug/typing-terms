@@ -2,7 +2,7 @@
 
 ゲームエンジン開発でよく使う英単語を、意味と紐づけながら身体で覚えるためのブラウザ用学習ツールです。まずは Unreal Engine 編。今後 Unity 版・Godot 版を追加予定です。
 
-**▶ [ここで遊べます](https://ユーザー名.github.io/typing-terms/)**
+**▶ [ここで遊べます](https://typing-terms.bullmus-vg.workers.dev/)**
 
 ---
 
