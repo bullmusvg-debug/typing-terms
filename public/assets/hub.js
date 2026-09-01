@@ -155,6 +155,8 @@
       .map(([concept, ws]) => ({ concept, words: ws }));
   }
 
+  // 組の見出しバッジ。2語間の関係と同じ規則(弱いほうを採用)で、
+  // 組の中に「近い」の語が1つでもあれば組は「近い」。
   function groupRelation(ws){
     return ws.some(w=> w.match === "近い") ? "近い" : "同義";
   }

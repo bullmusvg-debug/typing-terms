@@ -77,6 +77,12 @@ window.SEL = (function(){
   }
 
   /* ---------- エンジン間の相互参照 (concept / match) ---------- */
+  // match は「その語が概念の中心にどれだけ忠実か」を表す。
+  // 2語間の関係は、両者の match のうち弱いほう(近い > 同義)を採用する。
+  // これで「A から見た B」と「B から見た A」が必ず一致する。
+  function pairMatch(a, b){
+    return (a === "近い" || b === "近い") ? "近い" : "同義";
+  }
   // myEngineId の word に対応する、他エンジンの語を返す
   function crossRefsFor(word, myEngineId){
     if(!word || !word.concept) return [];
@@ -87,7 +93,7 @@ window.SEL = (function(){
       if(!list) continue;
       for(const w of list){
         if(w.concept && w.concept === word.concept){
-          out.push({ engineId: eng.id, engineName: eng.name, en: w.en, ja: w.ja, match: w.match || "同義" });
+          out.push({ engineId: eng.id, engineName: eng.name, en: w.en, ja: w.ja, match: pairMatch(word.match, w.match) });
         }
       }
     }
@@ -156,7 +162,7 @@ window.SEL = (function(){
     CONFIG, DETAIL_FIELDS,
     escapeHtml,
     loadWordData, registerWords, wordsFor, loadedEngineIds, allLoadedWords,
-    crossRefsFor, crossRefEnsFor, matchBadge,
+    pairMatch, crossRefsFor, crossRefEnsFor, matchBadge,
     renderDetailRows, renderCrossRef, renderExpandBody,
     applyPageMeta,
   };
